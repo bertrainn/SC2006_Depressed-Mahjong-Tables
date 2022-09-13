@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "152442875734",
+    "project_id": "mahjong-movers",
+    "storage_bucket": "mahjong-movers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152442875734:android:b14d3093dd8ede9b1df0f7",
+        "android_client_info": {
+          "package_name": "com.example.mahjong_movers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152442875734-1i64elh5524a3s53mvhkeabg8i9eq2re.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQPSzPUDkuLwnaUY1_bo-VucEpDu-oknc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152442875734-1i64elh5524a3s53mvhkeabg8i9eq2re.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
