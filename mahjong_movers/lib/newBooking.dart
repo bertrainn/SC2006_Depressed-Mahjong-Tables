@@ -3,22 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ClientSignupInfo {
-  final String dName;
-  final String phoneNumber;
-  final String email;
-
-  ClientSignupInfo(this.dName, this.phoneNumber, this.email);
-}
-
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+class NewBookingPage extends StatefulWidget {
+  const NewBookingPage({Key? key}) : super(key: key);
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<NewBookingPage> createState() => _NewBookingPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _NewBookingPageState extends State<NewBookingPage> {
   final _formKey = GlobalKey<FormState>();
   final _displayNameController = TextEditingController();
   final _phoneNumberController = TextEditingController();

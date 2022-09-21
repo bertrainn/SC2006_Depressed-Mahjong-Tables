@@ -4,6 +4,9 @@ import 'firebase_options.dart';
 import 'login.dart';
 import 'signup.dart';
 import 'forgotPassword.dart';
+import 'home.dart';
+import 'admin.dart';
+import 'newBooking.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +43,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/signup': (context) => const SignUpPage(),
         '/forgotPassword': (context) => const ForgotPassPage(),
+        '/home': (context) => const HomePage(),
+        '/newBooking': (context) => const NewBookingPage(),
       },
     );
   }

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,13 +36,20 @@ class _LoginPageState extends State<LoginPage> {
         for (var admin in snapshot.docs) {
           if (userCredential.user?.uid == admin.id) {
             if (userCredential.user?.emailVerified == false) {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              Navigator.popAndPushNamed(context, '/userVerification');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    duration: new Duration(seconds: 4),
+                    content: Row(
+                      children: <Widget>[
+                        new Text("Verify your email! Check your spam folder!")
+                      ],
+                    )),
+              );
             } else {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.popAndPushNamed(
                 context,
-                '/adminHome',
+                '/admin',
                 arguments: {
                   'uid': userCredential.user?.uid,
                   'fname': admin['fname']
@@ -54,33 +59,10 @@ class _LoginPageState extends State<LoginPage> {
           }
         }
       });
-      //check if user is coach
+
+      //check if user is user
       FirebaseFirestore.instance
-          .collection('coach')
-          .snapshots()
-          .listen((snapshot) {
-        for (var coach in snapshot.docs) {
-          if (userCredential.user?.uid == coach.id) {
-            if (userCredential.user?.emailVerified == false) {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              Navigator.popAndPushNamed(context, '/userVerification');
-            } else {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              Navigator.popAndPushNamed(
-                context,
-                '/coachHome',
-                arguments: {
-                  'uid': userCredential.user?.uid,
-                  'fname': coach['fname']
-                },
-              );
-            }
-          }
-        }
-      });
-      //check if user is client
-      FirebaseFirestore.instance
-          .collection('client')
+          .collection('user')
           .snapshots()
           .listen((snapshot) {
         for (var client in snapshot.docs) {
@@ -89,43 +71,38 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.popAndPushNamed(
                 context,
-                '/clientHome',
-                arguments: {
-                  'uid': userCredential.user?.uid,
-                  'fname': client['fname']
-                },
+                '/home',
               );
             } else {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              Navigator.popAndPushNamed(
-                context,
-                '/userVerification',
-                arguments: {
-                  'uid': userCredential.user?.uid,
-                  'fname': client['fname']
-                },
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    duration: new Duration(seconds: 4),
+                    content: Row(
+                      children: <Widget>[
+                        new Text("Verify your email! Check your spam folder!")
+                      ],
+                    )),
               );
             }
           }
         }
       });
 
-      // TODO: Temporary fix to allow the check above to be done
       await Future.delayed(const Duration(seconds: 3));
 
-      if (userCredential.user?.emailVerified == true) {
-        var findUser = await FirebaseFirestore.instance
-            .collection('client')
-            .doc(userCredential.user?.uid)
-            .get();
-        if (findUser.exists == false) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          Navigator.popAndPushNamed(context, '/rekeyUserData');
-        }
-      } else {
-        Navigator.of(context).popUntil((route) => route.isFirst);
-        Navigator.popAndPushNamed(context, '/userVerification');
-      }
+      // if (userCredential.user?.emailVerified == true) {
+      //   var findUser = await FirebaseFirestore.instance
+      //       .collection('client')
+      //       .doc(userCredential.user?.uid)
+      //       .get();
+      //   if (findUser.exists == false) {
+      //     Navigator.of(context).popUntil((route) => route.isFirst);
+      //     Navigator.popAndPushNamed(context, '/rekeyUserData');
+      //   }
+      // } else {
+      //   Navigator.of(context).popUntil((route) => route.isFirst);
+      //   Navigator.popAndPushNamed(context, '/userVerification');
+      // }
     } on FirebaseAuthException catch (e) {
       showDialog(
           context: context,
@@ -156,31 +133,6 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print(e);
     }
-  }
-
-  //test
-  Future createUser(String name) async {
-    Map<String, dynamic> json = {
-      'email': 'email@email.com',
-      'fname': name,
-      'lname': 'Lname',
-      'phone': 90823746,
-      'trailLessonUsed': false,
-    };
-    final newClient =
-        FirebaseFirestore.instance.collection('client').doc('user-id');
-    await newClient.set(json);
-    Map<String, dynamic> childData = {
-      'level': 1,
-      'name': name,
-      'score': 80,
-      'testReady': true,
-    };
-    FirebaseFirestore.instance
-        .collection('client')
-        .doc('user-id')
-        .collection('children')
-        .add(childData);
   }
 
   @override
