@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class NewBookingPage extends StatefulWidget {
   const NewBookingPage({Key? key}) : super(key: key);
@@ -12,65 +15,54 @@ class NewBookingPage extends StatefulWidget {
 
 class _NewBookingPageState extends State<NewBookingPage> {
   final _formKey = GlobalKey<FormState>();
-  final _displayNameController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _jobNameController = TextEditingController();
+  final _jobDesController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _locationController = TextEditingController();
 
   late UserCredential userCredential;
 
-  void signUp(String inputEmail, String inputPassword, String dName,
-      String number) async {
-    String? message;
-    try {
-      userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: inputEmail, password: inputPassword);
-      message = 'Account has been created, please verify your email.';
-      FirebaseAuth.instance.currentUser?.sendEmailVerification();
+  Future<String> getPlaceId(String input) async {
+    var response = await http.get(Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=$input&inputtype=textquery&key=AIzaSyBgJNR8v3RGPfTRbnBNrK8t5XrSfJW01Xs'));
+    var json = jsonDecode(response.body);
+    var placeId = json['candidates'][0]['place_id'].toString();
+    return placeId;
+  }
 
-      Map<String, dynamic> json = {
-        'email': inputEmail,
-        'name': dName,
-        'phone': int.parse(number),
-        'rating': 5,
-        'picURL': ""
-      };
-      final newClient = FirebaseFirestore.instance
-          .collection('user')
-          .doc(userCredential.user?.uid);
-      await newClient.set(json);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return accountCreationSuccessDialog(context, message!);
-        },
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        //TODO: remove for production
-        print('The password provided is too weak.');
-        message = 'The password provided is too weak.';
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return accountCreationFailedDialog(context, message!);
-          },
-        );
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-        message = 'The account already exists for that email.';
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return accountCreationFailedDialog(context, message!);
-          },
-        );
-      }
-    } catch (e) {
-      print(e);
-      message = e as String?;
-    }
+  Future<Map<String, dynamic>> getPlace(String input) async {
+    final placeId = await getPlaceId(input + ' singapore');
+    var response = await http.get(Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=AIzaSyBgJNR8v3RGPfTRbnBNrK8t5XrSfJW01Xs'));
+    var json = jsonDecode(response.body);
+    var results = json['result'] as Map<String, dynamic>;
+    return results;
+  }
+
+  void createTransaction(String jobName, String jobDes, String price,
+      String location, String payment) async {
+    var place = await getPlace(location + " Singapore");
+    GeoPoint locationGeo = GeoPoint(place['geometry']['location']['lat'],
+        place['geometry']['location']['lng']);
+    Map<String, dynamic> transaction = {
+      'job': jobName,
+      'jobDescription': jobDes,
+      'location': locationGeo,
+      'locationName': location,
+      'payment': payment,
+      'transactionAccepted': false,
+      'transactionAcceptedDateTime': '',
+      'transactionAmount': double.parse(price),
+      'transactionCreatedDateTime':
+          DateTime.now().millisecondsSinceEpoch.toString(),
+      'requestor': FirebaseAuth.instance.currentUser?.uid,
+      'servicer': ''
+    };
+    print(transaction);
+
+    final newTransaction = FirebaseFirestore.instance.collection('transaction');
+
+    await newTransaction.add(transaction);
   }
 
   AlertDialog accountCreationSuccessDialog(
@@ -82,12 +74,6 @@ class _NewBookingPageState extends State<NewBookingPage> {
         TextButton(
           child: const Text("OK"),
           onPressed: () {
-            //_emailController.clear();
-            // _passwordController.clear();
-            //firstNameController.clear();
-            //_lastNameController.clear();
-            // _registerNoController.clear();
-            // _teamController.clear();
             Navigator.of(context).popUntil((route) => route.isFirst);
 
             Navigator.popAndPushNamed(
@@ -109,18 +95,20 @@ class _NewBookingPageState extends State<NewBookingPage> {
         TextButton(
           child: const Text("OK"),
           onPressed: () {
-            //_emailController.clear();
-            // _passwordController.clear();
-            //firstNameController.clear();
-            //_lastNameController.clear();
-            // _registerNoController.clear();
-            // _teamController.clear();
             Navigator.of(context).pop();
           },
         )
       ],
     );
   }
+
+  final List<String> _selectableModeOfPayment = [
+    'Cash',
+    'Paylah!',
+    'PayNow',
+  ];
+
+  String _modeOfPayment = "Cash";
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +124,7 @@ class _NewBookingPageState extends State<NewBookingPage> {
             centerTitle: true,
             backgroundColor: const Color.fromARGB(255, 33, 126, 50),
             title: const Text(
-              "Sign Up",
+              "New Job",
               style: TextStyle(color: Colors.white),
             ),
             systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -154,31 +142,23 @@ class _NewBookingPageState extends State<NewBookingPage> {
                 height: 24.0,
               ),
               TextFormField(
-                controller: _displayNameController,
+                controller: _jobNameController,
                 validator: (value) =>
-                    value!.isEmpty ? 'First Name is required' : null,
+                    value!.isEmpty ? 'Job Name is Required!' : null,
                 style: const TextStyle(color: Colors.black),
                 onChanged: (value) {
                   //Do something with the user input.
                   //email = value;
                 },
                 decoration: const InputDecoration(
-                  labelText: 'Display Name',
-                  hintText: 'Enter your display name',
+                  labelText: 'Job Name',
+                  hintText: 'Enter your job name',
                   hintStyle: TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: Colors.white54,
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black26, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black26, width: 2.0),
+                  border: UnderlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(32.0)),
                   ),
                 ),
@@ -187,39 +167,49 @@ class _NewBookingPageState extends State<NewBookingPage> {
                 height: 20.0,
               ),
               TextFormField(
+                controller: _jobDesController,
+                validator: (value) =>
+                    value!.isEmpty ? 'Job Description is Required!' : null,
+                style: const TextStyle(color: Colors.black),
+                onChanged: (value) {
+                  //Do something with the user input.
+                  //email = value;
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Job Description',
+                  hintText: 'Enter your job description',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  filled: true,
+                  fillColor: Colors.white54,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  border: UnderlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              TextFormField(
+                controller: _priceController,
+                validator: (value) =>
+                    value!.isEmpty ? 'Price is required' : null,
+                style: const TextStyle(color: Colors.black),
                 keyboardType: TextInputType.number,
-                controller: _phoneNumberController,
-                inputFormatters: <TextInputFormatter>[
-                  // for below version 2 use this
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-// for version 2 and greater youcan also use this
-                  FilteringTextInputFormatter.digitsOnly
-                ],
-                maxLength: 8,
-                validator: (value) =>
-                    value!.isEmpty ? 'Phone Number is required' : null,
-                style: const TextStyle(color: Colors.black),
                 onChanged: (value) {
                   //Do something with the user input.
                   //password = value;
                 },
                 decoration: const InputDecoration(
-                  labelText: 'Phone Number',
-                  hintText: 'Enter your phone number',
+                  labelText: 'Price',
+                  hintText: 'Enter your item price',
                   hintStyle: TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: Colors.white,
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black26, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black26, width: 2.0),
+                  border: UnderlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(32.0)),
                   ),
                 ),
@@ -228,45 +218,10 @@ class _NewBookingPageState extends State<NewBookingPage> {
                 height: 20.0,
               ),
               TextFormField(
-                controller: _emailController,
+                controller: _locationController,
                 validator: (value) =>
-                    value!.isEmpty ? 'Email is required' : null,
+                    value!.isEmpty ? 'Location is required' : null,
                 style: const TextStyle(color: Colors.black),
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (value) {
-                  //Do something with the user input.
-                  //password = value;
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'Enter your email',
-                  hintStyle: TextStyle(color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black26, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black26, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              TextFormField(
-                controller: _passwordController,
-                validator: (value) =>
-                    value!.isEmpty ? 'Password is required' : null,
-                style: const TextStyle(color: Colors.black),
-                obscureText: true,
                 autocorrect: false,
                 enableSuggestions: false,
                 onChanged: (value) {
@@ -274,28 +229,43 @@ class _NewBookingPageState extends State<NewBookingPage> {
                   //password = value;
                 },
                 decoration: const InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Enter your password',
+                  labelText: 'Location',
+                  hintText: 'Enter your Location',
                   hintStyle: TextStyle(color: Colors.grey),
                   filled: true,
                   fillColor: Colors.white,
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black26, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black26, width: 2.0),
+                  border: UnderlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(32.0)),
                   ),
                 ),
               ),
               const SizedBox(
                 height: 20.0,
+              ),
+              DropdownButtonFormField<String>(
+                value: _selectableModeOfPayment[0],
+                hint: const Text(
+                  'Select Number Of Students',
+                ),
+                decoration: const InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  border: UnderlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                ),
+                onChanged: (newValue) {
+                  _modeOfPayment = newValue!;
+                },
+                validator: (value) => value == null ? 'field required' : null,
+                items: _selectableModeOfPayment.map((clientSize) {
+                  return DropdownMenuItem(
+                    value: clientSize,
+                    child: Text(clientSize),
+                  );
+                }).toList(),
               ),
               const SizedBox(
                 height: 20.0,
@@ -312,19 +282,19 @@ class _NewBookingPageState extends State<NewBookingPage> {
                         //form is valid, proceed further
                         //TODO: remove for production
 
-                        signUp(
-                          _emailController.text,
-                          _passwordController.text,
-                          _displayNameController.text,
-                          _phoneNumberController.text,
-                        );
+                        createTransaction(
+                            _jobNameController.text,
+                            _jobDesController.text,
+                            _priceController.text,
+                            _locationController.text,
+                            _modeOfPayment);
                         print('valid');
                       }
                     },
                     minWidth: 200.0,
                     height: 42.0,
                     child: const Text(
-                      'Sign Up',
+                      'Create Job',
                     ),
                   ),
                 ),

@@ -164,7 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
               TextFormField(
                 controller: _displayNameController,
                 validator: (value) =>
-                    value!.isEmpty ? 'First Name is required' : null,
+                    value!.isEmpty ? 'Display Name is required' : null,
                 style: const TextStyle(color: Colors.black),
                 onChanged: (value) {
                   //Do something with the user input.

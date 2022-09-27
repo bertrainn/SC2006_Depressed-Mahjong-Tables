@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
       extendBody: true,
       //extendBodyBehindAppBar: false,
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(150),
+          preferredSize: Size.fromHeight(100),
           child: AppBar(
             shape:
                 const RoundedRectangleBorder(borderRadius: BorderRadius.only()),
@@ -110,19 +110,6 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ],
-            flexibleSpace: PreferredSize(
-                preferredSize: Size.zero,
-                child: Align(
-                  alignment: const Alignment(-1, 0.8),
-                  child: Text(
-                    "   Welcome, ",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20),
-                    textAlign: TextAlign.right,
-                  ),
-                )),
             systemOverlayStyle: SystemUiOverlayStyle.dark,
           )),
       body: SingleChildScrollView(
@@ -161,6 +148,23 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+            for (var i = 0; i < noOfJobs; ++i)
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text("Job Name"),
+                      subtitle: Text("Job Description\n" + "\$10"),
+                      trailing: Text("DateTime: 23/9/2022"),
+                    ),
+                  ],
+                ),
+              ),
+            // This is to make it scroll nicely
             const SizedBox(
               height: 100.0,
             ),
