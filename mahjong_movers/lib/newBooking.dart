@@ -114,7 +114,7 @@ class _NewBookingPageState extends State<NewBookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(120),
+          preferredSize: const Size.fromHeight(100),
           child: AppBar(
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(

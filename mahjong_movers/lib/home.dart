@@ -96,9 +96,24 @@ class _HomePageState extends State<HomePage> {
                 const RoundedRectangleBorder(borderRadius: BorderRadius.only()),
             centerTitle: true,
             backgroundColor: const Color.fromARGB(255, 33, 126, 50),
-            title: const Text(
-              "Mahjong Movers",
-              style: TextStyle(color: Colors.white),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              // ignore: prefer_const_literals_to_create_immutables
+              children: [
+                // ignore: prefer_const_constructors
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Image(
+                    image: AssetImage("assets/icons/mm_logo.png"),
+                    width: 35,
+                    height: 35,
+                  ),
+                ),
+                const Text(
+                  "Mahjong Movers",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
             ),
             actions: <Widget>[
               IconButton(
