@@ -7,6 +7,7 @@ import 'forgotPassword.dart';
 import 'home.dart';
 import 'admin.dart';
 import 'newBooking.dart';
+import 'jobInfo.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         '/forgotPassword': (context) => const ForgotPassPage(),
         '/home': (context) => const HomePage(),
         '/newBooking': (context) => const NewBookingPage(),
+        '/jobInfo': (context) => const JobInfoPage(),
       },
     );
   }

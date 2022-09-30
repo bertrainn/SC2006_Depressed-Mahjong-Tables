@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 
 class NewBookingPage extends StatefulWidget {
   const NewBookingPage({Key? key}) : super(key: key);
@@ -19,6 +20,8 @@ class _NewBookingPageState extends State<NewBookingPage> {
   final _jobDesController = TextEditingController();
   final _priceController = TextEditingController();
   final _locationController = TextEditingController();
+
+  DateTime selectedDateAndTime = DateTime.now();
 
   late UserCredential userCredential;
 
@@ -40,7 +43,7 @@ class _NewBookingPageState extends State<NewBookingPage> {
   }
 
   void createTransaction(String jobName, String jobDes, String price,
-      String location, String payment) async {
+      String location, String payment, DateTime jobTime) async {
     var place = await getPlace(location + " Singapore");
     GeoPoint locationGeo = GeoPoint(place['geometry']['location']['lat'],
         place['geometry']['location']['lng']);
@@ -53,53 +56,16 @@ class _NewBookingPageState extends State<NewBookingPage> {
       'transactionAccepted': false,
       'transactionAcceptedDateTime': '',
       'transactionAmount': double.parse(price),
-      'transactionCreatedDateTime':
-          DateTime.now().millisecondsSinceEpoch.toString(),
+      'transactionCreatedDateTime': DateTime.now().millisecondsSinceEpoch,
       'requestor': FirebaseAuth.instance.currentUser?.uid,
-      'servicer': ''
+      'servicer': '',
+      'jobTime': jobTime.millisecondsSinceEpoch,
     };
     print(transaction);
 
     final newTransaction = FirebaseFirestore.instance.collection('transaction');
 
     await newTransaction.add(transaction);
-  }
-
-  AlertDialog accountCreationSuccessDialog(
-      BuildContext context, String message) {
-    return AlertDialog(
-      title: const Text("Notice"),
-      content: Text(message),
-      actions: [
-        TextButton(
-          child: const Text("OK"),
-          onPressed: () {
-            Navigator.of(context).popUntil((route) => route.isFirst);
-
-            Navigator.popAndPushNamed(
-              context,
-              '/login',
-            );
-          },
-        )
-      ],
-    );
-  }
-
-  AlertDialog accountCreationFailedDialog(
-      BuildContext context, String message) {
-    return AlertDialog(
-      title: const Text("Notice"),
-      content: Text(message),
-      actions: [
-        TextButton(
-          child: const Text("OK"),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        )
-      ],
-    );
   }
 
   final List<String> _selectableModeOfPayment = [
@@ -244,10 +210,28 @@ class _NewBookingPageState extends State<NewBookingPage> {
               const SizedBox(
                 height: 20.0,
               ),
+              Text("Time and Date"),
+              Container(
+                height: 200,
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.dateAndTime,
+                  minimumDate: DateTime.now(),
+                  initialDateTime: DateTime.now(),
+                  onDateTimeChanged: (DateTime newDateTime) {
+                    //Do Some thing
+                    selectedDateAndTime = newDateTime;
+                  },
+                  use24hFormat: false,
+                  minuteInterval: 1,
+                ),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
               DropdownButtonFormField<String>(
                 value: _selectableModeOfPayment[0],
                 hint: const Text(
-                  'Select Number Of Students',
+                  'Select Payment Methods',
                 ),
                 decoration: const InputDecoration(
                   contentPadding:
@@ -287,8 +271,30 @@ class _NewBookingPageState extends State<NewBookingPage> {
                             _jobDesController.text,
                             _priceController.text,
                             _locationController.text,
-                            _modeOfPayment);
+                            _modeOfPayment,
+                            selectedDateAndTime);
                         print('valid');
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Success!"),
+                                content:
+                                    const Text("Job successfully created!"),
+                                actions: [
+                                  TextButton(
+                                    child: const Text("Ok"),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .popUntil((route) => route.isFirst);
+
+                                      Navigator.popAndPushNamed(
+                                          context, '/home');
+                                    },
+                                  )
+                                ],
+                              );
+                            });
                       }
                     },
                     minWidth: 200.0,
