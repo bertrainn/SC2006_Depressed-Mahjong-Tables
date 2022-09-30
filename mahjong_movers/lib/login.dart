@@ -146,136 +146,146 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Color.fromARGB(255, 33, 126, 50),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            const Image(
-              image: AssetImage("assets/icons/mm_logo.png"),
-              width: 100,
-              height: 100,
-            ),
-            const SizedBox(
-              height: 48.0,
-            ),
-            TextField(
-              style: const TextStyle(
-                  color: Colors.black, backgroundColor: Colors.white),
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                //Do something with the user input.
-                email = value;
-              },
-              decoration: const InputDecoration(
-                hintText: 'Enter your email',
-                hintStyle: TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Image(
+                  image: AssetImage("assets/icons/mm_logo.png"),
+                  width: 100,
+                  height: 100,
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 8.0,
-            ),
-            TextField(
-              obscureText: !_passwordVisible,
-              autocorrect: false,
-              enableSuggestions: false,
-              onChanged: (value) {
-                //Do something with the user input.
-                password = value;
-              },
-              decoration: const InputDecoration(
-                hintText: 'Enter your password.',
-                hintStyle: TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              const Text("Mahjong Movers",
+                  style: TextStyle(
+                    fontSize: 36.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  )),
+              const SizedBox(
+                height: 24.0,
+              ),
+              TextField(
+                style: const TextStyle(
+                    color: Colors.black, backgroundColor: Colors.white),
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) {
+                  //Do something with the user input.
+                  email = value;
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter your email',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white70, width: 1.0),
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white70, width: 2.0),
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 24.0,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                //Implement login functionality.
-                if (mounted) {
-                  setState(() {
-                    logInUser(email, password);
-                  });
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(20),
-                primary: Colors.white, // <-- Button color
-                onPrimary: Colors.black, // <-- Splash color
+              const SizedBox(
+                height: 8.0,
               ),
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.black,
-                size: 24.0,
+              TextField(
+                obscureText: !_passwordVisible,
+                autocorrect: false,
+                enableSuggestions: false,
+                onChanged: (value) {
+                  //Do something with the user input.
+                  password = value;
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter your password.',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white70, width: 1.0),
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white70, width: 2.0),
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 24.0,
-            ),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(children: [
-                TextSpan(
-                    text: 'Sign Up',
-                    style: const TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255),
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.pushNamed(context, '/signup');
-                      }),
-              ]),
-            ),
-            const SizedBox(
-              height: 24.0,
-            ),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(children: [
-                TextSpan(
-                    text: 'Forgot Password',
-                    style: const TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255),
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.pushNamed(context, '/forgotPassword');
-                      }),
-              ]),
-            ),
-          ],
+              const SizedBox(
+                height: 24.0,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  //Implement login functionality.
+                  if (mounted) {
+                    setState(() {
+                      logInUser(email, password);
+                    });
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(20),
+                  primary: Colors.white, // <-- Button color
+                  onPrimary: Colors.black, // <-- Splash color
+                ),
+                child: const Icon(
+                  Icons.arrow_forward,
+                  color: Colors.black,
+                  size: 24.0,
+                ),
+              ),
+              const SizedBox(
+                height: 24.0,
+              ),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: 'Sign Up',
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 255),
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushNamed(context, '/signup');
+                        }),
+                ]),
+              ),
+              const SizedBox(
+                height: 24.0,
+              ),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: 'Forgot Password',
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 255),
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushNamed(context, '/forgotPassword');
+                        }),
+                ]),
+              ),
+            ],
+          ),
         ),
       ),
     );
