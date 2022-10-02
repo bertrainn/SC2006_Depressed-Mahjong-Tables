@@ -8,6 +8,9 @@ import 'home.dart';
 import 'admin.dart';
 import 'newBooking.dart';
 import 'jobInfo.dart';
+import 'profile.dart';
+import 'task.dart';
+import 'chat.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +50,9 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomePage(),
         '/newBooking': (context) => const NewBookingPage(),
         '/jobInfo': (context) => const JobInfoPage(),
+        '/profile': (context) => const ProfilePage(),
+        '/task': (context) => const TaskPage(),
+        '/chat': (context) => const ChatPage(),
       },
     );
   }

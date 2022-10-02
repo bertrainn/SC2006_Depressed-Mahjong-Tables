@@ -8,16 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ProfilePageState extends State<ProfilePage> {
   //late Timer timer;
-  int currentNavIndex = 1;
+  int currentNavIndex = 2;
 
   int noOfJobs = 0;
 
@@ -43,8 +43,7 @@ class _HomePageState extends State<HomePage> {
     FirebaseFirestore.instance
         .collection('transaction')
         .where('transactionAccepted', isEqualTo: false)
-        .where('requestor',
-            isNotEqualTo: FirebaseAuth.instance.currentUser?.uid)
+        .where('requestor', isNotEqualTo: FirebaseAuth.instance.currentUser)
         .snapshots()
         .listen((snapshot) {
       //iterate each client
@@ -66,13 +65,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   void AcceptTransaction(String transactionID) {
+    noOfJobs = 0;
     FirebaseFirestore.instance
         .collection('transaction')
-        .doc(transactionID)
-        .update({
-      "servicer": FirebaseAuth.instance.currentUser?.uid,
-      "transactionAcceptedDateTime": DateTime.now().millisecondsSinceEpoch,
-      "transactionAccepted": true
+        .where('transactionAccepted', isEqualTo: false)
+        .snapshots()
+        .listen((snapshot) {
+      //iterate each client
+      snapshot.docs.forEach((transaction) {
+        setState(() {
+          //_controllerList.add(Completer());
+          geoPointList.add(transaction.get('location'));
+          locationName.add(transaction.get('locationName'));
+          jobName.add(transaction.get('job'));
+          jobDesc.add(transaction.get('jobDescription'));
+          jobPrice.add(transaction.get('transactionAmount'));
+          jobDate.add(transaction.get('jobTime'));
+          jobID.add(transaction.id);
+
+          ++noOfJobs;
+        });
+      });
     });
   }
 
@@ -99,6 +112,7 @@ class _HomePageState extends State<HomePage> {
       });
     });
     await Future.delayed(Duration(seconds: 1));
+    print(geoPointListMap);
 
     setState(() {
       _markers.clear();
@@ -111,6 +125,7 @@ class _HomePageState extends State<HomePage> {
         );
         _markers[locationNameMap[i]] = marker;
       }
+      print(_markers);
     });
   }
 
@@ -211,30 +226,7 @@ class _HomePageState extends State<HomePage> {
                               .toString()),
                     ),
                     TextButton(
-                      onPressed: () {
-                        AcceptTransaction(jobID[i]);
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Success!"),
-                                content:
-                                    const Text("Job Accepted Successfully!"),
-                                actions: [
-                                  TextButton(
-                                    child: const Text("Ok"),
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .popUntil((route) => route.isFirst);
-
-                                      Navigator.popAndPushNamed(
-                                          context, '/home');
-                                    },
-                                  )
-                                ],
-                              );
-                            });
-                      },
+                      onPressed: () {},
                       child: const Text("Accept Job"),
                     ),
                   ],
@@ -259,10 +251,10 @@ class _HomePageState extends State<HomePage> {
                   '/task',
                 );
                 break;
-              case 2:
+              case 1:
                 Navigator.pushReplacementNamed(
                   context,
-                  '/profile',
+                  '/home',
                 );
                 break;
               default:

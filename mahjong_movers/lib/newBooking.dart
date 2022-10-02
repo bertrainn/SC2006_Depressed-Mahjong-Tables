@@ -60,8 +60,8 @@ class _NewBookingPageState extends State<NewBookingPage> {
       'requestor': FirebaseAuth.instance.currentUser?.uid,
       'servicer': '',
       'jobTime': jobTime.millisecondsSinceEpoch,
+      'jobCompleted': false
     };
-    print(transaction);
 
     final newTransaction = FirebaseFirestore.instance.collection('transaction');
 
@@ -273,7 +273,7 @@ class _NewBookingPageState extends State<NewBookingPage> {
                             _locationController.text,
                             _modeOfPayment,
                             selectedDateAndTime);
-                        print('valid');
+
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
