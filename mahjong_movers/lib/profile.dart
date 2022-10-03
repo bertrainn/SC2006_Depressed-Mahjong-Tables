@@ -80,13 +80,10 @@ class _ProfilePageState extends State<ProfilePage> {
               // ignore: prefer_const_literals_to_create_immutables
               children: [
                 // ignore: prefer_const_constructors
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Image(
-                    image: AssetImage("assets/icons/mm_logo.png"),
-                    width: 35,
-                    height: 35,
-                  ),
+                const Image(
+                  image: AssetImage("assets/icons/mm_logo.png"),
+                  width: 70,
+                  height: 70,
                 ),
                 const Text(
                   "Mahjong Movers",

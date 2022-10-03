@@ -154,8 +154,8 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.all(12.0),
                 child: Image(
                   image: AssetImage("assets/icons/mm_logo.png"),
-                  width: 100,
-                  height: 100,
+                  width: 300,
+                  height: 300,
                 ),
               ),
               const Text("Mahjong Movers",
