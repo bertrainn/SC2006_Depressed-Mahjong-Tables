@@ -183,7 +183,6 @@ class _JobInfoPageState extends State<JobInfoPage> {
             const SizedBox(
               height: 20,
             ),
-
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
