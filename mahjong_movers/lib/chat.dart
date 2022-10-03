@@ -43,7 +43,7 @@ class _ChatPageState extends State<ChatPage> {
     String? idUser = FirebaseAuth.instance.currentUser?.uid;
     return Scaffold(
         appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(100),
+            preferredSize: const Size.fromHeight(80),
             child: AppBar(
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -61,12 +61,15 @@ class _ChatPageState extends State<ChatPage> {
         body: Column(children: [
           Expanded(
               child: Container(
+                
             padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25))),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    "assets/images/Mahjong Movers-logos_black.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('chats/$idUser/messages')

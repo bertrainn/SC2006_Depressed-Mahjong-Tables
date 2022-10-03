@@ -69,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
       extendBody: true,
       //extendBodyBehindAppBar: false,
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
+          preferredSize: Size.fromHeight(80),
           child: AppBar(
             shape:
                 const RoundedRectangleBorder(borderRadius: BorderRadius.only()),
