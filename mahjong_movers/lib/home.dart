@@ -245,6 +245,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: currentNavIndex,
         onTap: (index) {
           setState(() {
@@ -257,6 +258,12 @@ class _HomePageState extends State<HomePage> {
                 );
                 break;
               case 2:
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/rewards',
+                );
+                break;
+              case 3:
                 Navigator.pushReplacementNamed(
                   context,
                   '/profile',
@@ -278,6 +285,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.monetization_on_sharp),
             label: 'Jobs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.card_giftcard_rounded),
+            label: 'Rewards',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.manage_accounts),

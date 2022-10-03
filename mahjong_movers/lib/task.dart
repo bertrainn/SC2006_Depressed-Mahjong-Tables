@@ -213,7 +213,9 @@ class _TaskPageState extends State<TaskPage> {
           ],
         ),
       ),
+
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: currentNavIndex,
         onTap: (index) {
           setState(() {
@@ -226,6 +228,12 @@ class _TaskPageState extends State<TaskPage> {
                 );
                 break;
               case 2:
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/rewards',
+                );
+                break;
+              case 3:
                 Navigator.pushReplacementNamed(
                   context,
                   '/profile',
@@ -247,6 +255,10 @@ class _TaskPageState extends State<TaskPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.monetization_on_sharp),
             label: 'Jobs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.card_giftcard_rounded),
+            label: 'Rewards',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.manage_accounts),

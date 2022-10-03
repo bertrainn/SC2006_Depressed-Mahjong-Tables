@@ -11,6 +11,7 @@ import 'jobInfo.dart';
 import 'profile.dart';
 import 'task.dart';
 import 'chat.dart';
+import 'rewards.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => const ProfilePage(),
         '/task': (context) => const TaskPage(),
         '/chat': (context) => const ChatPage(),
+        '/rewards': (context) => const RewardsPage(),
       },
     );
   }

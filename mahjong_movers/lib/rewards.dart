@@ -11,57 +11,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+class RewardsPage extends StatefulWidget {
+  const RewardsPage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<RewardsPage> createState() => _RewardsPageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  //late Timer timer;
-  int currentNavIndex = 3;
-
-  String name = "";
-  String email = "";
-  int phone = 0;
-  String picURL = "";
-  int rating = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    RetrieveTransactionData();
-  }
-
-  void pickUploadImage() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 512,
-      maxHeight: 512,
-      imageQuality: 75,
-    );
-
-    Reference ref = FirebaseStorage.instance.ref().child("profilepic.jpg");
-    await ref.putFile(File(image!.path));
-    ref.getDownloadURL().then((value) {
-      print(value);
-    });
-  }
-
-  void RetrieveTransactionData() {
-    FirebaseFirestore.instance
-        .collection('user')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .get()
-        .then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        print(data['email']);
-      },
-      onError: (e) => print("Error getting document: $e"),
-    );
-  }
+class _RewardsPageState extends State<RewardsPage> {
+  int currentNavIndex = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -103,10 +61,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
             systemOverlayStyle: SystemUiOverlayStyle.dark,
           )),
-      body: ListView(
-        physics: BouncingScrollPhysics(),
-        children: [],
-      ),
 
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -127,10 +81,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   '/home',
                 );
                 break;
-              case 2:
+              case 3:
                 Navigator.pushReplacementNamed(
                   context,
-                  '/rewards',
+                  '/profile',
                 );
                 break;
               default:
