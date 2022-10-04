@@ -21,6 +21,54 @@ class RewardsPage extends StatefulWidget {
 class _RewardsPageState extends State<RewardsPage> {
   int currentNavIndex = 2;
 
+  int noOfRewards = 0;
+  List<int> rewardIDR = [];
+  List<String> nameR = [];
+  List<String> descriptionR = [];
+  List<String> picURLR = [];
+  List<int> priceR = [];
+
+  int points = 0;
+  String name = "";
+
+  @override
+  void initState() {
+    super.initState();
+    RetrieveRewardData();
+  }
+
+  void RetrieveRewardData() {
+    FirebaseFirestore.instance
+        .collection('rewards')
+        .snapshots()
+        .listen((snapshot) {
+      //iterate each client
+      snapshot.docs.forEach((reward) {
+        setState(() {
+          //_controllerList.add(Completer());
+          rewardIDR.add(reward.get('rewardID'));
+          nameR.add(reward.get('name'));
+          descriptionR.add(reward.get('description'));
+          picURLR.add(reward.get('picURL'));
+          priceR.add(reward.get('price'));
+          ++noOfRewards;
+        });
+      });
+    });
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .get()
+        .then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        name = data['name'];
+        points = data['points'];
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +109,18 @@ class _RewardsPageState extends State<RewardsPage> {
             ],
             systemOverlayStyle: SystemUiOverlayStyle.dark,
           )),
+
+      body: Container(
+        child: GridView.builder(
+          itemCount: noOfRewards,
+          itemBuilder: (context, index) {
+            return rewardCard(nameR[index], descriptionR[index], priceR[index],
+                picURLR[index]);
+          },
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2),
+        ),
+      ),
 
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -116,4 +176,28 @@ class _RewardsPageState extends State<RewardsPage> {
       ),
     );
   }
+}
+
+Card rewardCard(String name, String description, int price, String picURL) {
+  return Card(
+      elevation: 4.0,
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(name),
+          ),
+          Container(
+            width: 100,
+            height: 100,
+            child: Ink.image(image: NetworkImage(picURL), fit: BoxFit.contain),
+          ),
+          Flexible(
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              alignment: Alignment.centerLeft,
+              child: Text(description),
+            ),
+          ),
+        ],
+      ));
 }
