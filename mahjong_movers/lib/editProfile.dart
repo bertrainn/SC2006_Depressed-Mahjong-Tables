@@ -1,3 +1,5 @@
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
@@ -10,20 +12,19 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import './widget/profilePicWidget.dart';
-import './widget/profileFieldWidget.dart';
-import './widget/statsWidget.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+import './widget/profilePicWidget.dart';
+
+class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<EditProfilePage> createState() => _EditProfileState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  //late Timer timer;
-  int currentNavIndex = 3;
+class _EditProfileState extends State<EditProfilePage> {
+  // temporary
+  int currentNavIndex = 4;
 
   String name = "";
   String email = "";
@@ -124,7 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 70,
                 ),
                 const Text(
-                  "Mahjong Movers",
+                  "Edit Profile",
                   style: TextStyle(color: Colors.white),
                 ),
               ],
@@ -155,93 +156,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     onPressed: () {
                       print("upload picture");
                     },
-                    icon: Icon(Icons.add_circle_rounded, color: Colors.green),
+                    icon: Icon(Icons.add_a_photo_rounded, color: Colors.green),
                     iconSize: 25,
                     splashRadius: 10.0,
                   ),
                 ),
               ]),
-              Center(
-                child: Text(name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    )),
-              ),
-              SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  StatsWidget("Rating", rating),
-                  StatsWidget("Points", points),
-                  StatsWidget("Report", reportCount)
-                ],
-              ),
-              SizedBox(height: 40),
-              Column(
-                children: [
-                  ProfileFieldWidget("Phone Number", phone.toString()),
-                  ProfileFieldWidget("Email Address", email),
-                  ProfileFieldWidget("About you",
-                      '''lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ilorem 
-                      ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem 
-                      ipsump lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumumlorem ipsum''')
-                ],
-              )
             ]),
-      ),
-
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: currentNavIndex,
-        onTap: (index) {
-          setState(() {
-            currentNavIndex = index;
-            switch (index) {
-              case 0:
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/task',
-                );
-                break;
-              case 1:
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/home',
-                );
-                break;
-              case 2:
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/rewards',
-                );
-                break;
-              default:
-                break;
-            }
-          });
-        },
-        backgroundColor: const Color.fromARGB(255, 33, 126, 50),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.task),
-            label: 'Task',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.monetization_on_sharp),
-            label: 'Jobs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.card_giftcard_rounded),
-            label: 'Rewards',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.manage_accounts),
-            label: 'Profile',
-          )
-        ],
       ),
     );
   }
