@@ -43,6 +43,7 @@ dependencies:
   firebase_storage: ^10.3.10
   image_picker: ^0.8.5+3
   flutter_phone_direct_caller: ^2.1.1   
+  flutter_chat_ui: ^1.6.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

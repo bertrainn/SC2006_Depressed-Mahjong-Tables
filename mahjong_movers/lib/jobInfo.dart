@@ -167,7 +167,8 @@ class _JobInfoPageState extends State<JobInfoPage> {
                 icon: const Icon(Icons.chat),
                 onPressed: () {
                   setState(() {
-                    Navigator.pushNamed(context, '/chat');
+                    Navigator.pushNamed(context, '/chat',
+                        arguments: {'jobID': arguments['jobID']});
                   });
                 },
               ),
