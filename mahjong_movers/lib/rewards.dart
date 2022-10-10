@@ -91,9 +91,18 @@ class _RewardsPageState extends State<RewardsPage> {
                   width: 70,
                   height: 70,
                 ),
-                const Text(
-                  "Mahjong Movers",
-                  style: TextStyle(color: Colors.white),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text(
+                      "Mahjong Movers",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text("Point Balance: ${points}",
+                        style: TextStyle(
+                          fontSize: 14,
+                        )),
+                  ],
                 ),
               ],
             ),
@@ -111,14 +120,12 @@ class _RewardsPageState extends State<RewardsPage> {
           )),
 
       body: Container(
-        child: GridView.builder(
+        child: ListView.builder(
           itemCount: noOfRewards,
           itemBuilder: (context, index) {
             return rewardCard(nameR[index], descriptionR[index], priceR[index],
                 picURLR[index]);
           },
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2),
         ),
       ),
 
@@ -191,23 +198,41 @@ class _RewardsPageState extends State<RewardsPage> {
 Card rewardCard(String name, String description, int price, String picURL) {
   return Card(
       elevation: 4.0,
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(name),
+      child: Column(children: [
+        ListTile(
+          title: Text(name),
+        ),
+        Container(
+          height: 100.0,
+          child: Ink.image(
+            image: NetworkImage(picURL),
+            fit: BoxFit.fitHeight,
           ),
-          Container(
-            width: 100,
-            height: 100,
-            child: Ink.image(image: NetworkImage(picURL), fit: BoxFit.contain),
+        ),
+        Container(
+          padding: EdgeInsets.all(16.0),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            description,
+            overflow: TextOverflow.ellipsis,
           ),
-          Flexible(
-            child: Container(
-              padding: EdgeInsets.all(16.0),
-              alignment: Alignment.centerLeft,
-              child: Text(description),
-            ),
+        ),
+        Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+          child: Text(
+            "${price} Points",
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-        ],
-      ));
+        ),
+        ButtonBar(
+          children: [
+            TextButton(
+                child: const Text("Redeem"),
+                onPressed: () {
+                  print("Pee Pee");
+                }),
+          ],
+        )
+      ]));
 }
