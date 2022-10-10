@@ -216,6 +216,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   '/rewards',
                 );
                 break;
+              case 4:
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/report',
+                );
+                break;
               default:
                 break;
             }
