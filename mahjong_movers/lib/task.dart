@@ -239,6 +239,12 @@ class _TaskPageState extends State<TaskPage> {
                   '/profile',
                 );
                 break;
+              case 4:
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/report',
+                );
+                break;
               default:
                 break;
             }
@@ -263,6 +269,10 @@ class _TaskPageState extends State<TaskPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.manage_accounts),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.report),
+            label: 'report',
           )
         ],
       ),

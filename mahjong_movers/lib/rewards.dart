@@ -147,6 +147,12 @@ class _RewardsPageState extends State<RewardsPage> {
                   '/profile',
                 );
                 break;
+              case 4:
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/report',
+                );
+                break;
               default:
                 break;
             }
@@ -171,6 +177,10 @@ class _RewardsPageState extends State<RewardsPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.manage_accounts),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.report),
+            label: 'report',
           )
         ],
       ),

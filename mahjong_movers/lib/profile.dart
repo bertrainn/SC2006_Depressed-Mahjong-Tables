@@ -240,6 +240,10 @@ class _ProfilePageState extends State<ProfilePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.manage_accounts),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.report),
+            label: 'report',
           )
         ],
       ),
