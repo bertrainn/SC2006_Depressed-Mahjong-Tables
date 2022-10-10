@@ -72,7 +72,8 @@ class _HomePageState extends State<HomePage> {
         .update({
       "servicer": FirebaseAuth.instance.currentUser?.uid,
       "transactionAcceptedDateTime": DateTime.now().millisecondsSinceEpoch,
-      "transactionAccepted": true
+      "transactionAccepted": true,
+      "jobStatus": 1
     });
   }
 

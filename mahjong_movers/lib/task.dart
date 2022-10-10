@@ -68,7 +68,7 @@ class _TaskPageState extends State<TaskPage> {
     noOfJobsS = 0;
     FirebaseFirestore.instance
         .collection('transaction')
-        .where('jobCompleted', isEqualTo: false)
+        .where('jobStatus', isEqualTo: 1)
         .where('servicer', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
         .snapshots()
         .listen((snapshot) {

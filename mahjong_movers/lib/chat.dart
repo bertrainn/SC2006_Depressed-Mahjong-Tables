@@ -74,17 +74,13 @@ class _ChatPageState extends State<ChatPage> {
             systemOverlayStyle: SystemUiOverlayStyle.dark,
           )),
       body: Chat(
+        theme: const DefaultChatTheme(
+            inputBackgroundColor: Colors.grey, primaryColor: Colors.green),
         messages: _messages,
         onSendPressed: _handleSendPressed,
         user: _user,
       ),
     );
-  }
-
-  void _addMessage(types.Message message) {
-    setState(() {
-      _messages.insert(0, message);
-    });
   }
 
   void _handleSendPressed(types.PartialText message) async {

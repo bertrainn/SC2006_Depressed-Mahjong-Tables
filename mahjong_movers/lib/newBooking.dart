@@ -60,7 +60,7 @@ class _NewBookingPageState extends State<NewBookingPage> {
       'requestor': FirebaseAuth.instance.currentUser?.uid,
       'servicer': '',
       'jobTime': jobTime.millisecondsSinceEpoch,
-      'jobCompleted': false
+      'jobStatus': 0
     };
 
     final newTransaction = FirebaseFirestore.instance.collection('transaction');

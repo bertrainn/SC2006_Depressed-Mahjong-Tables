@@ -80,44 +80,10 @@ class _JobInfoPageState extends State<JobInfoPage> {
     });
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Future.delayed(Duration.zero, () {
-  //     setState(() {
-  //       arguments = ModalRoute.of(context).settings.arguments;
-  //     });
-
-  //     RetrieveTransactionData(arguments['jobID']);
-  //   });
-  // }
-  // }
-
-  //late GoogleMapController mapController;
-
   LatLng _center = LatLng(1.3502136, 103.8068375);
 
   final Map<String, Marker> _markers = {};
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    //mapController = controller;
-
-    // FirebaseFirestore.instance
-    //     .collection('transaction')
-    //     .where('transactionAccepted', isEqualTo: false)
-    //     .snapshots()
-    //     .listen((snapshot) {
-    //   //iterate each client
-    //   snapshot.docs.forEach((transaction) {
-    //     setState(() {
-    //       //_controllerList.add(Completer());
-    //       geoPointListMap.add(transaction.get('location'));
-    //       locationNameMap.add(transaction.get('locationName'));
-    //     });
-    //   });
-    // });
-    // await Future.delayed(Duration(seconds: 1));
-    // print(geoPointListMap);
-
     setState(() {
       _markers.clear();
 
