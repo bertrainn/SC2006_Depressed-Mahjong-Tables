@@ -37,6 +37,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
   String servicerID = '';
   String displayName = '';
   String displayNameR = '';
+  int jobStatus = 0;
 
   void RetrieveTransactionData(String jobID) {
     FirebaseFirestore.instance
@@ -55,6 +56,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
         jobPayment = DocumentSnapshot.get('payment');
         requestorID = DocumentSnapshot.get('requestor');
         servicerID = DocumentSnapshot.get('servicer');
+        jobStatus = DocumentSnapshot.get('jobStatus');
       });
     });
     if (servicerID != "") {
@@ -174,7 +176,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
                 ],
               ),
             ),
-            if (servicerID != '')
+            if (servicerID != '' && jobStatus == 1)
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -213,17 +215,24 @@ class _JobInfoPageState extends State<JobInfoPage> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text("Success!"),
-                                content:
-                                    const Text("Job Accepted Successfully!"),
+                                content: const Text(
+                                    "Job Accepted Successfully! Now awaiting for Requestor to confirm!"),
                                 actions: [
                                   TextButton(
                                     child: const Text("Ok"),
                                     onPressed: () {
+                                      FirebaseFirestore.instance
+                                          .collection('transaction')
+                                          .doc(arguments['jobID'])
+                                          .update({"jobStatus": 2});
                                       Navigator.of(context)
                                           .popUntil((route) => route.isFirst);
 
                                       Navigator.popAndPushNamed(
-                                          context, '/home');
+                                          context, '/rate', arguments: {
+                                        "UID": servicerID,
+                                        "jobID": arguments['jobID']
+                                      });
                                     },
                                   )
                                 ],
@@ -231,6 +240,103 @@ class _JobInfoPageState extends State<JobInfoPage> {
                             });
                       },
                       child: const Text("Job Done"),
+                    ),
+                  ],
+                ),
+              ),
+            if (servicerID != '' && jobStatus == 2)
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text("Job Name: " + jobName + "\n"),
+                      subtitle: Text("Job Description: " +
+                          jobDesc +
+                          "\n\n" +
+                          "Price: \$" +
+                          jobPrice.toString() +
+                          "\n\n" +
+                          "DateTime: " +
+                          DateFormat.yMd()
+                              .add_jm()
+                              .format(
+                                  DateTime.fromMillisecondsSinceEpoch(jobDate))
+                              .toString() +
+                          "\n\n" +
+                          "Mode of Payment: " +
+                          jobPayment +
+                          "\n\n" +
+                          "Person Service: " +
+                          displayName +
+                          "\n\n" +
+                          "Person Requested: " +
+                          displayNameR),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Success!"),
+                                content: const Text("Job Completed!"),
+                                actions: [
+                                  TextButton(
+                                    child: const Text("Ok"),
+                                    onPressed: () {
+                                      FirebaseFirestore.instance
+                                          .collection('transaction')
+                                          .doc(arguments['jobID'])
+                                          .update({"jobStatus": 3});
+                                      Navigator.of(context)
+                                          .popUntil((route) => route.isFirst);
+
+                                      Navigator.popAndPushNamed(
+                                          context, '/rate', arguments: {
+                                        "UID": requestorID,
+                                        "jobID": arguments['jobID']
+                                      });
+                                    },
+                                  )
+                                ],
+                              );
+                            });
+                      },
+                      child: const Text("Job Done"),
+                    ),
+                  ],
+                ),
+              ),
+            if (servicerID != '' && (jobStatus == 1 || jobStatus == 0))
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text("Job Name: " + jobName + "\n"),
+                      subtitle: Text("Job Description: " +
+                          jobDesc +
+                          "\n\n" +
+                          "Price: \$" +
+                          jobPrice.toString() +
+                          "\n\n" +
+                          "DateTime: " +
+                          DateFormat.yMd()
+                              .add_jm()
+                              .format(
+                                  DateTime.fromMillisecondsSinceEpoch(jobDate))
+                              .toString() +
+                          "\n\n" +
+                          "Mode of Payment: " +
+                          jobPayment +
+                          "\n\n"),
                     ),
                   ],
                 ),
