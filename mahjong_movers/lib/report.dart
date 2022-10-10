@@ -134,7 +134,7 @@ class _ReportPageState extends State<ReportPage> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.fromLTRB(270, 250, 20, 20),
+              padding: const EdgeInsets.fromLTRB(240, 250, 20, 20),
               child: ElevatedButton(
                   child: Text('Emergency \n       Call'),
                   onPressed: () => launch("tel: 911"),
