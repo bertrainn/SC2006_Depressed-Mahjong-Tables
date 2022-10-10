@@ -115,12 +115,12 @@ class _JobInfoPageState extends State<JobInfoPage> {
 
     _center = LatLng(geoPointList.latitude, geoPointList.longitude);
 
-    if ((transactionCreatedTime - DateTime.now().millisecondsSinceEpoch) <=
+    if ((DateTime.now().millisecondsSinceEpoch - transactionCreatedTime) <=
         3000) {
       canDelete = true;
     }
 
-    if ((transactionAcceptedTime - DateTime.now().millisecondsSinceEpoch) <=
+    if ((DateTime.now().millisecondsSinceEpoch - transactionAcceptedTime) <=
         3000) {
       canDeleteS = true;
     }
