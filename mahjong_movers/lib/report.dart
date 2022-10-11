@@ -187,7 +187,7 @@ class _ReportPageState extends State<ReportPage> {
                 height: 20.0,
               ),
               Container(
-                padding: const EdgeInsets.only(left: 115),
+                padding: const EdgeInsets.only(left: 114),
                 child: Material(
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(30.0)),
@@ -248,13 +248,13 @@ class _ReportPageState extends State<ReportPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.fromLTRB(150, 180, 20, 20),
+                padding: const EdgeInsets.fromLTRB(144, 170, 20, 20),
                 child: ElevatedButton.icon(
                     onPressed: _callNumber,
                     label: Text('Emergency \n       Call'),
                     icon: Icon(Icons.call),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 207, 57, 57))),
+                        backgroundColor: Color.fromARGB(255, 209, 59, 59))),
               ),
             ])));
   }
