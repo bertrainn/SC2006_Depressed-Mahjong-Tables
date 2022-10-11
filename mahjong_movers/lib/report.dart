@@ -187,9 +187,8 @@ class _ReportPageState extends State<ReportPage> {
                 height: 20.0,
               ),
               Container(
-                padding: const EdgeInsets.only(
-                  left: 108,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 7, horizontal: 100),
                 child: Material(
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(30.0)),
@@ -250,7 +249,8 @@ class _ReportPageState extends State<ReportPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.fromLTRB(140, 120, 20, 20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 70, horizontal: 123),
                 child: ElevatedButton.icon(
                     onPressed: _callNumber,
                     label: Text('Emergency \n       Call'),
