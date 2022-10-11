@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'main.dart';
 
 class RewardsPage extends StatefulWidget {
   const RewardsPage({super.key});
@@ -69,6 +70,13 @@ class _RewardsPageState extends State<RewardsPage> {
     );
   }
 
+  void updatePointValue(int newValue) {
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .update({"points": newValue});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,9 +99,18 @@ class _RewardsPageState extends State<RewardsPage> {
                   width: 70,
                   height: 70,
                 ),
-                const Text(
-                  "Mahjong Movers",
-                  style: TextStyle(color: Colors.white),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text(
+                      "Mahjong Movers",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text("Point Balance: ${points}",
+                        style: TextStyle(
+                          fontSize: 14,
+                        )),
+                  ],
                 ),
               ],
             ),
@@ -111,14 +128,135 @@ class _RewardsPageState extends State<RewardsPage> {
           )),
 
       body: Container(
-        child: GridView.builder(
+        child: ListView.builder(
           itemCount: noOfRewards,
           itemBuilder: (context, index) {
-            return rewardCard(nameR[index], descriptionR[index], priceR[index],
-                picURLR[index]);
+            return Card(
+                elevation: 4.0,
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  ListTile(
+                    title: Text(nameR[index]),
+                  ),
+                  Container(
+                    height: 100.0,
+                    child: Ink.image(
+                      image: NetworkImage(picURLR[index]),
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      descriptionR[index],
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                    child: Text(
+                      "${priceR[index]} Points",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  ButtonBar(
+                    children: [
+                      TextButton(
+                          child: const Text("Redeem"),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text(
+                                        "${nameR[index]} - ${priceR[index]} Points"),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(16.0),
+                                          child: Image.network(picURLR[index],
+                                              fit: BoxFit.contain),
+                                        ),
+                                        Text(descriptionR[index]),
+                                      ],
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text("Cancel"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text("Redeem"),
+                                        onPressed: () {
+                                          if (priceR[index] > points) {
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                        "Insufficient Points"),
+                                                    content: const Text(
+                                                        "You do not have enough points to redeem this reward."),
+                                                    actions: [
+                                                      TextButton(
+                                                        child: const Text("Ok"),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      )
+                                                    ],
+                                                  );
+                                                });
+                                          } else {
+                                            updatePointValue(
+                                                points - priceR[index]);
+
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                        "Redemption Successful"),
+                                                    content: const Text(
+                                                        "Please await for your reward. Hope you'll keep using our service. Thank You :)"),
+                                                    actions: [
+                                                      TextButton(
+                                                        child: const Text("Ok"),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .popUntil((route) =>
+                                                                  route
+                                                                      .isFirst);
+
+                                                          Navigator
+                                                              .popAndPushNamed(
+                                                                  context,
+                                                                  '/rewards',
+                                                                  arguments: {});
+                                                        },
+                                                      )
+                                                    ],
+                                                  );
+                                                });
+                                          }
+                                        },
+                                      )
+                                    ],
+                                  );
+                                });
+                            //print("Pee Pee ${priceR[index]}");
+                          }),
+                    ],
+                  )
+                ]));
           },
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2),
         ),
       ),
 
@@ -147,6 +285,12 @@ class _RewardsPageState extends State<RewardsPage> {
                   '/profile',
                 );
                 break;
+              case 4:
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/report',
+                );
+                break;
               default:
                 break;
             }
@@ -171,33 +315,13 @@ class _RewardsPageState extends State<RewardsPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.manage_accounts),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.report),
+            label: 'report',
           )
         ],
       ),
     );
   }
-}
-
-Card rewardCard(String name, String description, int price, String picURL) {
-  return Card(
-      elevation: 4.0,
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(name),
-          ),
-          Container(
-            width: 100,
-            height: 100,
-            child: Ink.image(image: NetworkImage(picURL), fit: BoxFit.contain),
-          ),
-          Flexible(
-            child: Container(
-              padding: EdgeInsets.all(16.0),
-              alignment: Alignment.centerLeft,
-              child: Text(description),
-            ),
-          ),
-        ],
-      ));
 }

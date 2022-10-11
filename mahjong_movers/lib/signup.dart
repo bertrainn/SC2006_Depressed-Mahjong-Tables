@@ -42,7 +42,8 @@ class _SignUpPageState extends State<SignUpPage> {
         'name': dName,
         'phone': int.parse(number),
         'rating': 5,
-        'picURL': ""
+        'picURL': "",
+        'points': 0,
       };
       final newClient = FirebaseFirestore.instance
           .collection('user')

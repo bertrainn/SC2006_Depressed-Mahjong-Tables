@@ -42,10 +42,14 @@ dependencies:
   url_launcher: ^6.1.6
   firebase_storage: ^10.3.10
   image_picker: ^0.8.5+3
+  flutter_phone_direct_caller: ^2.1.1   
+  file_picker: ^5.2.0+1
+  flutter_chat_ui: ^1.6.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
