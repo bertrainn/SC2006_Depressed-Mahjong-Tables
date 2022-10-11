@@ -54,7 +54,7 @@ class _NewBookingPageState extends State<NewBookingPage> {
       'locationName': location,
       'payment': payment,
       'transactionAccepted': false,
-      'transactionAcceptedDateTime': '',
+      'transactionAcceptedDateTime': 0,
       'transactionAmount': double.parse(price),
       'transactionCreatedDateTime': DateTime.now().millisecondsSinceEpoch,
       'requestor': FirebaseAuth.instance.currentUser?.uid,

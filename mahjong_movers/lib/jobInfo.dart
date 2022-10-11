@@ -43,7 +43,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
   bool canDelete = false;
   bool canDeleteS = false;
 
-  void RetrieveTransactionData(String jobID) {
+  void RetrieveTransactionData(String jobID) async {
     FirebaseFirestore.instance
         .collection('transaction')
         .doc(jobID)
@@ -54,7 +54,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
         geoPointList = DocumentSnapshot.get('location');
         jobName = DocumentSnapshot.get('job');
         jobDesc = DocumentSnapshot.get('jobDescription');
-        jobPrice = DocumentSnapshot.get('transactionAmount');
+        jobPrice = DocumentSnapshot.get('transactionAmount').toDouble();
         jobDate = DocumentSnapshot.get('jobTime');
         jobID = DocumentSnapshot.id;
         jobPayment = DocumentSnapshot.get('payment');
@@ -78,16 +78,18 @@ class _JobInfoPageState extends State<JobInfoPage> {
         });
       });
     }
-
-    FirebaseFirestore.instance
-        .collection('user')
-        .doc(requestorID)
-        .get()
-        .then((user) {
-      setState(() {
-        displayNameR = user['name'];
+    if (requestorID != "") {
+      FirebaseFirestore.instance
+          .collection('user')
+          .doc(requestorID)
+          .get()
+          .then((user) {
+        setState(() {
+          displayNameR = user['name'];
+        });
       });
-    });
+    }
+    //await Future.delayed(Duration(seconds: 1));
   }
 
   LatLng _center = LatLng(1.3502136, 103.8068375);
@@ -104,6 +106,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
       );
       _markers[locationName] = marker;
     });
+    //await Future.delayed(Duration(seconds: 1));
   }
 
   @override

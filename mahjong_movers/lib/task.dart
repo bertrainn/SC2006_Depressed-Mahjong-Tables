@@ -57,7 +57,7 @@ class _TaskPageState extends State<TaskPage> {
             locationNameR.add(transaction.get('locationName'));
             jobNameR.add(transaction.get('job'));
             jobDescR.add(transaction.get('jobDescription'));
-            jobPriceR.add(transaction.get('transactionAmount'));
+            jobPriceR.add(transaction.get('transactionAmount').toDouble());
             jobDateR.add(transaction.get('jobTime'));
             jobIDR.add(transaction.id);
 
