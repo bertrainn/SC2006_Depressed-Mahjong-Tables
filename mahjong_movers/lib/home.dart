@@ -90,6 +90,8 @@ class _HomePageState extends State<HomePage> {
         .collection('transaction')
         .where('transactionAccepted', isEqualTo: false)
         .where('jobStatus', isEqualTo: 0)
+        .where('requestor',
+            isNotEqualTo: FirebaseAuth.instance.currentUser?.uid)
         .snapshots()
         .listen((snapshot) {
       //iterate each client
