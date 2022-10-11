@@ -187,7 +187,9 @@ class _ReportPageState extends State<ReportPage> {
                 height: 20.0,
               ),
               Container(
-                padding: const EdgeInsets.only(left: 114),
+                padding: const EdgeInsets.only(
+                  left: 114,
+                ),
                 child: Material(
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(30.0)),
