@@ -25,9 +25,8 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfilePage> {
-  final _formKey = GlobalKey<FormState>();
+  //final _formKey = GlobalKey<FormState>();
   // temporary
-  int currentNavIndex = 3;
 
   String name = "";
   String email = "";
@@ -97,7 +96,7 @@ class _EditProfileState extends State<EditProfilePage> {
           name = data['name'];
           email = data['email'];
           phone = data["phone"];
-          _password = data["password"];
+          //_password = data["password"];
         });
       },
       onError: (e) => print("Error getting document: $e"),
@@ -244,6 +243,24 @@ class _EditProfileState extends State<EditProfilePage> {
                   labelText: "Password",
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   hintText: "********",
+                  hintStyle: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              TextFormField(
+                keyboardType: TextInputType.multiline,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  // isDense: true,
+                  contentPadding:
+                      EdgeInsets.only(top: 20, bottom: 10, right: 20, left: 20),
+                  labelText: "About You",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText:
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
                   hintStyle: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,

@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
         '/chat': (context) => const ChatPage(),
         '/rewards': (context) => const RewardsPage(),
         '/editProfile': (context) => const EditProfilePage(),
-        '/report': (context) => const ReportPage(),
+        //'/report': (context) => const ReportPage(),
         '/rate': (context) => const RatePage(),
       },
     );
