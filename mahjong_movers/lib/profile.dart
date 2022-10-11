@@ -131,11 +131,12 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             actions: <Widget>[
               IconButton(
-                icon: const Icon(Icons.add_box_rounded),
+                icon: const Icon(Icons.settings),
                 onPressed: () {
-                  setState(() {
-                    Navigator.pushNamed(context, '/newBooking');
-                  });
+                  // setState(() {
+                  //   // temporary -> we need a settings page i thik
+                  //   Navigator.pushNamed(context, '/settings');
+                  // });
                 },
               ),
             ],
@@ -150,14 +151,32 @@ class _ProfilePageState extends State<ProfilePage> {
                 ProfilePicWidget(picURL),
                 Positioned(
                   right: 120,
-                  bottom: 0,
-                  child: IconButton(
-                    onPressed: () {
-                      print("upload picture");
-                    },
-                    icon: Icon(Icons.add_circle_rounded, color: Colors.green),
-                    iconSize: 25,
-                    splashRadius: 10.0,
+                  bottom: 2,
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 4,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      color: Colors.green,
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.only(bottom: 1),
+                      onPressed: () {
+                        print("edit profile");
+                        setState(() {
+                          Navigator.pushReplacementNamed(
+                              context, '/editProfile');
+                        });
+                      },
+                      icon: Icon(Icons.edit, color: Colors.white),
+                      iconSize: 22,
+                      splashRadius: 10.0,
+                    ),
                   ),
                 ),
               ]),

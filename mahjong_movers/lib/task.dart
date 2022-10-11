@@ -236,7 +236,7 @@ class _TaskPageState extends State<TaskPage> {
               case 3:
                 Navigator.pushReplacementNamed(
                   context,
-                  '/profile',
+                  '/editProfile', //temp
                 );
                 break;
               default:

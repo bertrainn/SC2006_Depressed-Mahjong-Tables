@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'dart:async';
@@ -23,16 +25,16 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfilePage> {
+  final _formKey = GlobalKey<FormState>();
   // temporary
-  int currentNavIndex = 4;
+  int currentNavIndex = 3;
 
   String name = "";
   String email = "";
   int phone = 0;
   String picURL = "";
-  int rating = 0;
-  int points = 0;
-  int reportCount = 0;
+  String _password = "";
+  bool _showPassword = false;
 
   @override
   void initState() {
@@ -95,8 +97,7 @@ class _EditProfileState extends State<EditProfilePage> {
           name = data['name'];
           email = data['email'];
           phone = data["phone"];
-          rating = data["rating"];
-          points = data["points"];
+          _password = data["password"];
         });
       },
       onError: (e) => print("Error getting document: $e"),
@@ -115,15 +116,18 @@ class _EditProfileState extends State<EditProfilePage> {
                 const RoundedRectangleBorder(borderRadius: BorderRadius.only()),
             centerTitle: true,
             backgroundColor: const Color.fromARGB(255, 33, 126, 50),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  Navigator.pushNamed(context, '/profile');
+                });
+              },
+            ),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               // ignore: prefer_const_literals_to_create_immutables
               children: [
-                const Image(
-                  image: AssetImage("assets/icons/mm_logo.png"),
-                  width: 70,
-                  height: 70,
-                ),
                 const Text(
                   "Edit Profile",
                   style: TextStyle(color: Colors.white),
@@ -151,17 +155,114 @@ class _EditProfileState extends State<EditProfilePage> {
                 ProfilePicWidget(picURL),
                 Positioned(
                   right: 120,
-                  bottom: 0,
-                  child: IconButton(
-                    onPressed: () {
-                      print("upload picture");
-                    },
-                    icon: Icon(Icons.add_a_photo_rounded, color: Colors.green),
-                    iconSize: 25,
-                    splashRadius: 10.0,
+                  bottom: 2,
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 4,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      color: Colors.green,
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.only(left: 0, right: 2, bottom: 2),
+                      onPressed: () {
+                        print("upload image");
+                        pickUploadImage();
+                      },
+                      icon:
+                          Icon(Icons.add_a_photo_rounded, color: Colors.white),
+                      iconSize: 20.5,
+                      splashRadius: 10.0,
+                    ),
                   ),
                 ),
               ]),
+              SizedBox(height: 20),
+              TextFormField(
+                decoration: InputDecoration(
+                  // isDense: true,
+                  contentPadding:
+                      EdgeInsets.only(top: 20, bottom: 10, right: 20, left: 20),
+                  labelText: "Display Name",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: name,
+                  hintStyle: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  // isDense: true,
+                  contentPadding:
+                      EdgeInsets.only(top: 20, bottom: 10, right: 20, left: 20),
+                  labelText: "Phone Number",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: phone.toString(),
+                  hintStyle: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  // isDense: true,
+                  contentPadding:
+                      EdgeInsets.only(top: 20, bottom: 10, right: 20, left: 20),
+                  labelText: "Email Address",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: email,
+                  hintStyle: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              TextFormField(
+                obscureText: !_showPassword,
+                obscuringCharacter: "*",
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _showPassword = !_showPassword;
+                        });
+                      },
+                      icon: Icon(Icons.remove_red_eye, color: Colors.grey)),
+                  contentPadding:
+                      EdgeInsets.only(top: 20, bottom: 10, right: 20, left: 20),
+                  labelText: "Password",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "********",
+                  hintStyle: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(height: 35),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                SizedBox(width: 30),
+                OutlinedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/profile');
+                    },
+                    child: const Text("Cancel")),
+                OutlinedButton(
+                    onPressed: () {}, child: const Text("Make Changes")),
+                SizedBox(width: 30),
+              ])
             ]),
       ),
     );

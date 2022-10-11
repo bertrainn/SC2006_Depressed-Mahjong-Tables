@@ -12,6 +12,7 @@ import 'profile.dart';
 import 'task.dart';
 import 'chat.dart';
 import 'rewards.dart';
+import 'editProfile.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
         '/task': (context) => const TaskPage(),
         '/chat': (context) => const ChatPage(),
         '/rewards': (context) => const RewardsPage(),
+        '/editProfile': (context) => const EditProfilePage(),
       },
     );
   }
