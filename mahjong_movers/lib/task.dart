@@ -53,14 +53,16 @@ class _TaskPageState extends State<TaskPage> {
       snapshot.docs.forEach((transaction) {
         setState(() {
           //_controllerList.add(Completer());
-          locationNameR.add(transaction.get('locationName'));
-          jobNameR.add(transaction.get('job'));
-          jobDescR.add(transaction.get('jobDescription'));
-          jobPriceR.add(transaction.get('transactionAmount'));
-          jobDateR.add(transaction.get('jobTime'));
-          jobIDR.add(transaction.id);
+          if (transaction.get('jobStatus') != 6) {
+            locationNameR.add(transaction.get('locationName'));
+            jobNameR.add(transaction.get('job'));
+            jobDescR.add(transaction.get('jobDescription'));
+            jobPriceR.add(transaction.get('transactionAmount').toDouble());
+            jobDateR.add(transaction.get('jobTime'));
+            jobIDR.add(transaction.id);
 
-          ++noOfJobsR;
+            ++noOfJobsR;
+          }
         });
       });
     });
@@ -68,7 +70,7 @@ class _TaskPageState extends State<TaskPage> {
     noOfJobsS = 0;
     FirebaseFirestore.instance
         .collection('transaction')
-        .where('jobCompleted', isEqualTo: false)
+        .where('jobStatus', isEqualTo: 1)
         .where('servicer', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
         .snapshots()
         .listen((snapshot) {
@@ -76,14 +78,16 @@ class _TaskPageState extends State<TaskPage> {
       snapshot.docs.forEach((transaction) {
         setState(() {
           //_controllerList.add(Completer());
-          locationNameS.add(transaction.get('locationName'));
-          jobNameS.add(transaction.get('job'));
-          jobDescS.add(transaction.get('jobDescription'));
-          jobPriceS.add(transaction.get('transactionAmount'));
-          jobDateS.add(transaction.get('jobTime'));
-          jobIDS.add(transaction.id);
+          if (transaction.get('jobStatus') != 6) {
+            locationNameS.add(transaction.get('locationName'));
+            jobNameS.add(transaction.get('job'));
+            jobDescS.add(transaction.get('jobDescription'));
+            jobPriceS.add(transaction.get('transactionAmount'));
+            jobDateS.add(transaction.get('jobTime'));
+            jobIDS.add(transaction.id);
 
-          ++noOfJobsS;
+            ++noOfJobsS;
+          }
         });
       });
     });

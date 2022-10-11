@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
     FirebaseFirestore.instance
         .collection('transaction')
         .where('transactionAccepted', isEqualTo: false)
+        .where('jobStatus', isEqualTo: 0)
         .where('requestor',
             isNotEqualTo: FirebaseAuth.instance.currentUser?.uid)
         .snapshots()
@@ -72,7 +73,8 @@ class _HomePageState extends State<HomePage> {
         .update({
       "servicer": FirebaseAuth.instance.currentUser?.uid,
       "transactionAcceptedDateTime": DateTime.now().millisecondsSinceEpoch,
-      "transactionAccepted": true
+      "transactionAccepted": true,
+      "jobStatus": 1
     });
   }
 
@@ -87,6 +89,7 @@ class _HomePageState extends State<HomePage> {
     FirebaseFirestore.instance
         .collection('transaction')
         .where('transactionAccepted', isEqualTo: false)
+        .where('jobStatus', isEqualTo: 0)
         .snapshots()
         .listen((snapshot) {
       //iterate each client

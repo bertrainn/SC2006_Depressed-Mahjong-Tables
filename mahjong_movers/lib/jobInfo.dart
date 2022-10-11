@@ -37,8 +37,13 @@ class _JobInfoPageState extends State<JobInfoPage> {
   String servicerID = '';
   String displayName = '';
   String displayNameR = '';
+  int jobStatus = 0;
+  int transactionCreatedTime = 0;
+  int transactionAcceptedTime = 0;
+  bool canDelete = false;
+  bool canDeleteS = false;
 
-  void RetrieveTransactionData(String jobID) {
+  void RetrieveTransactionData(String jobID) async {
     FirebaseFirestore.instance
         .collection('transaction')
         .doc(jobID)
@@ -49,12 +54,17 @@ class _JobInfoPageState extends State<JobInfoPage> {
         geoPointList = DocumentSnapshot.get('location');
         jobName = DocumentSnapshot.get('job');
         jobDesc = DocumentSnapshot.get('jobDescription');
-        jobPrice = DocumentSnapshot.get('transactionAmount');
+        jobPrice = DocumentSnapshot.get('transactionAmount').toDouble();
         jobDate = DocumentSnapshot.get('jobTime');
         jobID = DocumentSnapshot.id;
         jobPayment = DocumentSnapshot.get('payment');
         requestorID = DocumentSnapshot.get('requestor');
         servicerID = DocumentSnapshot.get('servicer');
+        jobStatus = DocumentSnapshot.get('jobStatus');
+        transactionCreatedTime =
+            DocumentSnapshot.get('transactionCreatedDateTime');
+        transactionAcceptedTime =
+            DocumentSnapshot.get('transactionAcceptedDateTime');
       });
     });
     if (servicerID != "") {
@@ -68,56 +78,24 @@ class _JobInfoPageState extends State<JobInfoPage> {
         });
       });
     }
-
-    FirebaseFirestore.instance
-        .collection('user')
-        .doc(requestorID)
-        .get()
-        .then((user) {
-      setState(() {
-        displayNameR = user['name'];
+    if (requestorID != "") {
+      FirebaseFirestore.instance
+          .collection('user')
+          .doc(requestorID)
+          .get()
+          .then((user) {
+        setState(() {
+          displayNameR = user['name'];
+        });
       });
-    });
+    }
+    //await Future.delayed(Duration(seconds: 1));
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Future.delayed(Duration.zero, () {
-  //     setState(() {
-  //       arguments = ModalRoute.of(context).settings.arguments;
-  //     });
-
-  //     RetrieveTransactionData(arguments['jobID']);
-  //   });
-  // }
-  // }
-
-  //late GoogleMapController mapController;
 
   LatLng _center = LatLng(1.3502136, 103.8068375);
 
   final Map<String, Marker> _markers = {};
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    //mapController = controller;
-
-    // FirebaseFirestore.instance
-    //     .collection('transaction')
-    //     .where('transactionAccepted', isEqualTo: false)
-    //     .snapshots()
-    //     .listen((snapshot) {
-    //   //iterate each client
-    //   snapshot.docs.forEach((transaction) {
-    //     setState(() {
-    //       //_controllerList.add(Completer());
-    //       geoPointListMap.add(transaction.get('location'));
-    //       locationNameMap.add(transaction.get('locationName'));
-    //     });
-    //   });
-    // });
-    // await Future.delayed(Duration(seconds: 1));
-    // print(geoPointListMap);
-
     setState(() {
       _markers.clear();
 
@@ -128,6 +106,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
       );
       _markers[locationName] = marker;
     });
+    //await Future.delayed(Duration(seconds: 1));
   }
 
   @override
@@ -138,6 +117,16 @@ class _JobInfoPageState extends State<JobInfoPage> {
     RetrieveTransactionData(arguments['jobID']);
 
     _center = LatLng(geoPointList.latitude, geoPointList.longitude);
+
+    if ((DateTime.now().millisecondsSinceEpoch - transactionCreatedTime) <=
+        3000) {
+      canDelete = true;
+    }
+
+    if ((DateTime.now().millisecondsSinceEpoch - transactionAcceptedTime) <=
+        3000) {
+      canDeleteS = true;
+    }
 
     return Scaffold(
       extendBody: true,
@@ -167,7 +156,8 @@ class _JobInfoPageState extends State<JobInfoPage> {
                 icon: const Icon(Icons.chat),
                 onPressed: () {
                   setState(() {
-                    Navigator.pushNamed(context, '/chat');
+                    Navigator.pushNamed(context, '/chat',
+                        arguments: {'jobID': arguments['jobID']});
                   });
                 },
               ),
@@ -207,7 +197,111 @@ class _JobInfoPageState extends State<JobInfoPage> {
                 ],
               ),
             ),
-            if (servicerID != '')
+            if (servicerID != '' && jobStatus == 1)
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text("Job Name: " + jobName + "\n"),
+                      subtitle: Text("Job Description: " +
+                          jobDesc +
+                          "\n\n" +
+                          "Price: \$" +
+                          jobPrice.toString() +
+                          "\n\n" +
+                          "DateTime: " +
+                          DateFormat.yMd()
+                              .add_jm()
+                              .format(
+                                  DateTime.fromMillisecondsSinceEpoch(jobDate))
+                              .toString() +
+                          "\n\n" +
+                          "Mode of Payment: " +
+                          jobPayment +
+                          "\n\n" +
+                          "Person Service: " +
+                          displayName +
+                          "\n\n" +
+                          "Person Requested: " +
+                          displayNameR),
+                    ),
+                    if (canDeleteS)
+                      TextButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Success!"),
+                                  content: const Text("Job Retracted!"),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text("Ok"),
+                                      onPressed: () {
+                                        FirebaseFirestore.instance
+                                            .collection('transaction')
+                                            .doc(arguments['jobID'])
+                                            .update({
+                                          "jobStatus": 0,
+                                          'transactionAcceptedDateTime': 0,
+                                          'transactionAccepted': false,
+                                          'servicer': ""
+                                        });
+                                        Navigator.of(context)
+                                            .popUntil((route) => route.isFirst);
+
+                                        Navigator.popAndPushNamed(
+                                            context, '/home',
+                                            arguments: {});
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                        },
+                        child: const Text("Retract Job"),
+                      ),
+                    TextButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Success!"),
+                                content: const Text(
+                                    "Job Accepted Successfully! Now awaiting for Requestor to confirm!"),
+                                actions: [
+                                  TextButton(
+                                    child: const Text("Ok"),
+                                    onPressed: () {
+                                      FirebaseFirestore.instance
+                                          .collection('transaction')
+                                          .doc(arguments['jobID'])
+                                          .update({"jobStatus": 2});
+                                      Navigator.of(context)
+                                          .popUntil((route) => route.isFirst);
+
+                                      Navigator.popAndPushNamed(
+                                          context, '/rate', arguments: {
+                                        "UID": servicerID,
+                                        "jobID": arguments['jobID']
+                                      });
+                                    },
+                                  )
+                                ],
+                              );
+                            });
+                      },
+                      child: const Text("Job Done"),
+                    ),
+                  ],
+                ),
+              ),
+            if (servicerID != '' && jobStatus == 2)
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -246,17 +340,23 @@ class _JobInfoPageState extends State<JobInfoPage> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text("Success!"),
-                                content:
-                                    const Text("Job Accepted Successfully!"),
+                                content: const Text("Job Completed!"),
                                 actions: [
                                   TextButton(
                                     child: const Text("Ok"),
                                     onPressed: () {
+                                      FirebaseFirestore.instance
+                                          .collection('transaction')
+                                          .doc(arguments['jobID'])
+                                          .update({"jobStatus": 3});
                                       Navigator.of(context)
                                           .popUntil((route) => route.isFirst);
 
                                       Navigator.popAndPushNamed(
-                                          context, '/home');
+                                          context, '/rate', arguments: {
+                                        "UID": requestorID,
+                                        "jobID": arguments['jobID']
+                                      });
                                     },
                                   )
                                 ],
@@ -265,6 +365,71 @@ class _JobInfoPageState extends State<JobInfoPage> {
                       },
                       child: const Text("Job Done"),
                     ),
+                  ],
+                ),
+              ),
+            if (servicerID != '' && jobStatus == 0)
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text("Job Name: " + jobName + "\n"),
+                      subtitle: Text("Job Description: " +
+                          jobDesc +
+                          "\n\n" +
+                          "Price: \$" +
+                          jobPrice.toString() +
+                          "\n\n" +
+                          "DateTime: " +
+                          DateFormat.yMd()
+                              .add_jm()
+                              .format(
+                                  DateTime.fromMillisecondsSinceEpoch(jobDate))
+                              .toString() +
+                          "\n\n" +
+                          "Mode of Payment: " +
+                          jobPayment +
+                          "\n\n"),
+                    ),
+                    if (canDeleteS)
+                      TextButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Success!"),
+                                  content: const Text("Job Retracted!"),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text("Ok"),
+                                      onPressed: () {
+                                        FirebaseFirestore.instance
+                                            .collection('transaction')
+                                            .doc(arguments['jobID'])
+                                            .update({
+                                          "jobStatus": 0,
+                                          'transactionAcceptedDateTime': 0,
+                                          'servicer': ""
+                                        });
+                                        Navigator.of(context)
+                                            .popUntil((route) => route.isFirst);
+
+                                        Navigator.popAndPushNamed(
+                                            context, '/home',
+                                            arguments: {});
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                        },
+                        child: const Text("Retract Job"),
+                      ),
                   ],
                 ),
               ),
@@ -296,6 +461,37 @@ class _JobInfoPageState extends State<JobInfoPage> {
                           "\n\n" +
                           "Person Service: Yet to be found"),
                     ),
+                    if (canDelete)
+                      TextButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Success!"),
+                                  content: const Text("Job Deleted!!"),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text("Ok"),
+                                      onPressed: () {
+                                        FirebaseFirestore.instance
+                                            .collection('transaction')
+                                            .doc(arguments['jobID'])
+                                            .update({"jobStatus": 6});
+                                        Navigator.of(context)
+                                            .popUntil((route) => route.isFirst);
+
+                                        Navigator.popAndPushNamed(
+                                            context, '/home',
+                                            arguments: {});
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                        },
+                        child: const Text("Delete Job"),
+                      ),
                   ],
                 ),
               ),

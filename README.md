@@ -10,6 +10,7 @@
 </details>
 
 ## About
+Our project is a Flutter mobile application.
 
 This is the repository for SC2006 Lab Assignment for lab group SSP 1 under the group name depressed elderly.
 

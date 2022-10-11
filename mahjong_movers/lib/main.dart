@@ -13,6 +13,7 @@ import 'task.dart';
 import 'chat.dart';
 import 'rewards.dart';
 import 'report.dart';
+import 'rate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 
@@ -57,6 +59,7 @@ class MyApp extends StatelessWidget {
         '/chat': (context) => const ChatPage(),
         '/rewards': (context) => const RewardsPage(),
         '/report': (context) => const ReportPage(),
+        '/rate': (context) => const RatePage(),
       },
     );
   }
