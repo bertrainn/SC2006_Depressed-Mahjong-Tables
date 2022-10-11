@@ -32,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   int rating = 0;
   int points = 0;
   int reportCount = 0;
-
+  String about = "";
   @override
   void initState() {
     super.initState();
@@ -96,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
           phone = data["phone"];
           rating = data["rating"];
           points = data["points"];
+          data.containsKey("about") ? about = data["about"] : about = "";
         });
       },
       onError: (e) => print("Error getting document: $e"),
@@ -180,6 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ]),
+              SizedBox(height: 6),
               Center(
                 child: Text(name,
                     style: const TextStyle(
@@ -201,10 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ProfileFieldWidget("Phone Number", phone.toString()),
                   ProfileFieldWidget("Email Address", email),
-                  ProfileFieldWidget("About you",
-                      '''lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ilorem 
-                      ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem 
-                      ipsump lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumumlorem ipsum''')
+                  ProfileFieldWidget("About you", about),
                 ],
               )
             ]),

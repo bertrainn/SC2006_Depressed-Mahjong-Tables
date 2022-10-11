@@ -101,6 +101,7 @@ class _EditProfileState extends State<EditProfilePage> {
           name = data['name'];
           email = data['email'];
           phone = data["phone"];
+          about = data["about"];
           //_password = data["password"];
         });
       },
@@ -126,7 +127,7 @@ class _EditProfileState extends State<EditProfilePage> {
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser?.uid);
     if (name != newName) {
-      print("name != newname");
+      print("newName != null");
       toUpdate["name"] = newName;
     }
     if (newEmail != "") {
@@ -135,7 +136,7 @@ class _EditProfileState extends State<EditProfilePage> {
     if (newPhone != null) {
       toUpdate["phone"] = newPhone as int;
     }
-    if (newAbout != null) {
+    if (newAbout != "") {
       toUpdate["about"] = newAbout;
     }
 
