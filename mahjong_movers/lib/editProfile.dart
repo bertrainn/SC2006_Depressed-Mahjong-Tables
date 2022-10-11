@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'dart:async';
@@ -23,16 +25,20 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfilePage> {
+  final _formKeyProfile = GlobalKey<FormState>();
   // temporary
-  int currentNavIndex = 4;
 
   String name = "";
+  String newName = "";
   String email = "";
-  int phone = 0;
+  String newEmail = "";
+  int? phone = null;
+  int? newPhone = null;
   String picURL = "";
-  int rating = 0;
-  int points = 0;
-  int reportCount = 0;
+  String _password = "";
+  String about = "";
+  String newAbout = "";
+  bool _showPassword = false;
 
   @override
   void initState() {
@@ -95,12 +101,54 @@ class _EditProfileState extends State<EditProfilePage> {
           name = data['name'];
           email = data['email'];
           phone = data["phone"];
-          rating = data["rating"];
-          points = data["points"];
+          about = data["about"];
+          //_password = data["password"];
         });
       },
       onError: (e) => print("Error getting document: $e"),
     );
+  }
+
+  bool _submit() {
+    if (_formKeyProfile.currentState!.validate()) {
+      update();
+      print("successful");
+      return true;
+    } else {
+      print("errors");
+      return false;
+    }
+  }
+
+  Future update() async {
+    Map<String, Object> toUpdate = {};
+
+    final docRef = FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+    if (name != newName) {
+      print("newName != null");
+      toUpdate["name"] = newName;
+    }
+    if (newEmail != "") {
+      toUpdate["email"] = newEmail;
+    }
+    if (newPhone != null) {
+      toUpdate["phone"] = newPhone as int;
+    }
+    if (newAbout != "") {
+      toUpdate["about"] = newAbout;
+    }
+
+    if (toUpdate.isEmpty) {
+      print("nothing to update");
+      return;
+    }
+    try {
+      docRef.update(toUpdate);
+    } catch (e) {
+      print("some error occurred");
+    }
   }
 
   @override
@@ -115,34 +163,38 @@ class _EditProfileState extends State<EditProfilePage> {
                 const RoundedRectangleBorder(borderRadius: BorderRadius.only()),
             centerTitle: true,
             backgroundColor: const Color.fromARGB(255, 33, 126, 50),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  Navigator.pushNamed(context, '/profile');
+                });
+              },
+            ),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               // ignore: prefer_const_literals_to_create_immutables
               children: [
-                const Image(
-                  image: AssetImage("assets/icons/mm_logo.png"),
-                  width: 70,
-                  height: 70,
-                ),
                 const Text(
                   "Edit Profile",
                   style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.add_box_rounded),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pushNamed(context, '/newBooking');
-                  });
-                },
-              ),
-            ],
+            // actions: <Widget>[
+            //   IconButton(
+            //     icon: const Icon(Icons.add_box_rounded),
+            //     onPressed: () {
+            //       setState(() {
+            //         Navigator.pushNamed(context, '/newBooking');
+            //       });
+            //     },
+            //   ),
+            // ],
             systemOverlayStyle: SystemUiOverlayStyle.dark,
           )),
-      body: Container(
+      body: Form(
+        key: _formKeyProfile,
         child: ListView(
             physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
@@ -151,17 +203,195 @@ class _EditProfileState extends State<EditProfilePage> {
                 ProfilePicWidget(picURL),
                 Positioned(
                   right: 120,
-                  bottom: 0,
-                  child: IconButton(
-                    onPressed: () {
-                      print("upload picture");
-                    },
-                    icon: Icon(Icons.add_a_photo_rounded, color: Colors.green),
-                    iconSize: 25,
-                    splashRadius: 10.0,
+                  bottom: 2,
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 4,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      color: Colors.green,
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.only(left: 0, right: 2, bottom: 2),
+                      onPressed: () {
+                        print("upload image");
+                        pickUploadImage();
+                      },
+                      icon:
+                          Icon(Icons.add_a_photo_rounded, color: Colors.white),
+                      iconSize: 20.5,
+                      splashRadius: 10.0,
+                    ),
                   ),
                 ),
               ]),
+              SizedBox(height: 20),
+              TextFormField(
+                  decoration: InputDecoration(
+                    // isDense: true,
+                    contentPadding: EdgeInsets.only(
+                        top: 20, bottom: 10, right: 20, left: 20),
+                    labelText: "Display Name",
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: name,
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => newName = value)),
+              TextFormField(
+                validator: (value) {
+                  if (value != null &&
+                      value.isNotEmpty &&
+                      value.contains(RegExp(r'[A-Z]', caseSensitive: false))) {
+                    return "Enter valid phone number";
+                  } else if (value != null &&
+                      value.isNotEmpty &&
+                      value.length < 8) {
+                    return "Phone number too short";
+                  } else {
+                    return null;
+                  }
+                },
+                onChanged: (value) =>
+                    setState(() => newPhone = int.parse(value)),
+                // keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  // isDense: true,
+                  contentPadding:
+                      EdgeInsets.only(top: 20, bottom: 10, right: 20, left: 20),
+                  labelText: "Phone Number",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: phone.toString(),
+                  hintStyle: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              TextFormField(
+                  validator: (value) {
+                    if (value != null &&
+                        value.isNotEmpty &&
+                        (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}')
+                            .hasMatch(value!))) {
+                      return "Enter valid email";
+                    } else {
+                      return null;
+                    }
+                  },
+                  decoration: InputDecoration(
+                    // isDense: true,
+                    contentPadding: EdgeInsets.only(
+                        top: 20, bottom: 10, right: 20, left: 20),
+                    labelText: "Email Address",
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: email,
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => newEmail = value)),
+              TextFormField(
+                validator: (value) {
+                  if (value != null &&
+                      value.isNotEmpty &&
+                      !RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[!@#\$&*~]).{8,}$')
+                          .hasMatch(value!)) {
+                    String msg =
+                        "Passwords must be at least 8-characters long, mixcased,\n alphanumeric, and has at least one special character\n('%', '#', '@')";
+                    return msg;
+                  }
+                },
+                obscureText: !_showPassword,
+                obscuringCharacter: "*",
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _showPassword = !_showPassword;
+                        });
+                      },
+                      icon: Icon(Icons.remove_red_eye, color: Colors.grey)),
+                  contentPadding:
+                      EdgeInsets.only(top: 20, bottom: 10, right: 20, left: 20),
+                  labelText: "Password",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "********",
+                  hintStyle: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              TextFormField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(
+                        top: 20, bottom: 10, right: 20, left: 20),
+                    labelText: "About You",
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: (about == "")
+                        ? "Please input a description of yourself."
+                        : about,
+                    hintStyle: (about == "")
+                        ? TextStyle(
+                            fontSize: 15,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.grey,
+                          )
+                        : TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                  ),
+                  onChanged: (value) => setState(() => newAbout = value)),
+              SizedBox(height: 35),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                SizedBox(width: 30),
+                OutlinedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/profile');
+                    },
+                    child: const Text("Cancel")),
+                OutlinedButton(
+                    onPressed: () {
+                      _submit()
+                          ? showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Success!"),
+                                  content: Text(
+                                      "Account information has been updated"),
+                                );
+                              })
+                          : showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("We are sorry :("),
+                                  content: Text(
+                                      "There were errors, please try again"),
+                                );
+                              });
+                    },
+                    child: const Text("Make Changes")),
+                SizedBox(width: 30),
+              ])
             ]),
       ),
     );

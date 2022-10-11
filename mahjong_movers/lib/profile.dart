@@ -32,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   int rating = 0;
   int points = 0;
   int reportCount = 0;
-
+  String about = "";
   @override
   void initState() {
     super.initState();
@@ -96,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
           phone = data["phone"];
           rating = data["rating"];
           points = data["points"];
+          data.containsKey("about") ? about = data["about"] : about = "";
         });
       },
       onError: (e) => print("Error getting document: $e"),
@@ -131,11 +132,12 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             actions: <Widget>[
               IconButton(
-                icon: const Icon(Icons.add_box_rounded),
+                icon: const Icon(Icons.settings),
                 onPressed: () {
-                  setState(() {
-                    Navigator.pushNamed(context, '/newBooking');
-                  });
+                  // setState(() {
+                  //   // temporary -> we need a settings page i thik
+                  //   Navigator.pushNamed(context, '/settings');
+                  // });
                 },
               ),
             ],
@@ -150,17 +152,36 @@ class _ProfilePageState extends State<ProfilePage> {
                 ProfilePicWidget(picURL),
                 Positioned(
                   right: 120,
-                  bottom: 0,
-                  child: IconButton(
-                    onPressed: () {
-                      print("upload picture");
-                    },
-                    icon: Icon(Icons.add_circle_rounded, color: Colors.green),
-                    iconSize: 25,
-                    splashRadius: 10.0,
+                  bottom: 2,
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 4,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      color: Colors.green,
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.only(bottom: 1),
+                      onPressed: () {
+                        print("edit profile");
+                        setState(() {
+                          Navigator.pushReplacementNamed(
+                              context, '/editProfile');
+                        });
+                      },
+                      icon: Icon(Icons.edit, color: Colors.white),
+                      iconSize: 22,
+                      splashRadius: 10.0,
+                    ),
                   ),
                 ),
               ]),
+              SizedBox(height: 6),
               Center(
                 child: Text(name,
                     style: const TextStyle(
@@ -182,10 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ProfileFieldWidget("Phone Number", phone.toString()),
                   ProfileFieldWidget("Email Address", email),
-                  ProfileFieldWidget("About you",
-                      '''lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ilorem 
-                      ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem 
-                      ipsump lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumumlorem ipsum''')
+                  ProfileFieldWidget("About you", about),
                 ],
               )
             ]),

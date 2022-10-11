@@ -12,6 +12,7 @@ import 'profile.dart';
 import 'task.dart';
 import 'chat.dart';
 import 'rewards.dart';
+import 'editProfile.dart';
 import 'report.dart';
 import 'rate.dart';
 
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
         '/task': (context) => const TaskPage(),
         '/chat': (context) => const ChatPage(),
         '/rewards': (context) => const RewardsPage(),
+        '/editProfile': (context) => const EditProfilePage(),
         '/report': (context) => const ReportPage(),
         '/rate': (context) => const RatePage(),
       },
