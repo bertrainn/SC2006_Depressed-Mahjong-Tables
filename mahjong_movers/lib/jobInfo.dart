@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'dart:developer';
+import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -37,9 +38,11 @@ class _JobInfoPageState extends State<JobInfoPage> {
   String servicerID = '';
   String displayName = '';
   String displayNameR = '';
+  String psiStr = '';
   int jobStatus = 0;
   int transactionCreatedTime = 0;
   int transactionAcceptedTime = 0;
+  int psi = 0;
   bool canDelete = false;
   bool canDeleteS = false;
 
@@ -92,6 +95,34 @@ class _JobInfoPageState extends State<JobInfoPage> {
     //await Future.delayed(Duration(seconds: 1));
   }
 
+  Future<void> fetchPSI() async {
+    final response = await http.get(Uri.parse(
+        'https://api.data.gov.sg/v1/environment/psi?date=2022-10-22'));
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      var psiReading = jsonDecode(response.body);
+
+      psi = psiReading['items'][2]["readings"]["pm25_twenty_four_hourly"]
+          ["national"];
+
+      if (psi >= 0 && psi <= 55) {
+        psiStr = "Normal";
+      } else if (psi >= 56 && psi <= 150) {
+        psiStr = "Elevated";
+      } else if (psi >= 151 && psi <= 250) {
+        psiStr = "High";
+      } else {
+        psiStr = "Very High";
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load PSI');
+    }
+  }
+
   LatLng _center = LatLng(1.3502136, 103.8068375);
 
   final Map<String, Marker> _markers = {};
@@ -115,6 +146,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
         <String, dynamic>{}) as Map;
 
     RetrieveTransactionData(arguments['jobID']);
+    fetchPSI();
 
     _center = LatLng(geoPointList.latitude, geoPointList.longitude);
 
@@ -220,6 +252,9 @@ class _JobInfoPageState extends State<JobInfoPage> {
                                   DateTime.fromMillisecondsSinceEpoch(jobDate))
                               .toString() +
                           "\n\n" +
+                          "PSI Level: " +
+                          psiStr +
+                          "\n\n" +
                           "Mode of Payment: " +
                           jobPayment +
                           "\n\n" +
@@ -324,6 +359,9 @@ class _JobInfoPageState extends State<JobInfoPage> {
                                   DateTime.fromMillisecondsSinceEpoch(jobDate))
                               .toString() +
                           "\n\n" +
+                          "PSI Level: " +
+                          psiStr +
+                          "\n\n" +
                           "Mode of Payment: " +
                           jobPayment +
                           "\n\n" +
@@ -391,6 +429,9 @@ class _JobInfoPageState extends State<JobInfoPage> {
                                   DateTime.fromMillisecondsSinceEpoch(jobDate))
                               .toString() +
                           "\n\n" +
+                          "PSI Level: " +
+                          psiStr +
+                          "\n\n" +
                           "Mode of Payment: " +
                           jobPayment +
                           "\n\n"),
@@ -455,6 +496,9 @@ class _JobInfoPageState extends State<JobInfoPage> {
                               .format(
                                   DateTime.fromMillisecondsSinceEpoch(jobDate))
                               .toString() +
+                          "\n\n" +
+                          "PSI Level: " +
+                          psiStr +
                           "\n\n" +
                           "Mode of Payment: " +
                           jobPayment +
