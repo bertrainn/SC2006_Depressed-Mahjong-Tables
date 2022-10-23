@@ -84,6 +84,9 @@ class _EditProfileState extends State<EditProfilePage> {
       print(url);
       imageUrl = url.toString();
     });
+    setState(() {
+      picURL = imageUrl;
+    });
     return imageUrl;
   }
 
