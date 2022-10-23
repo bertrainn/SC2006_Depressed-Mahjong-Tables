@@ -119,8 +119,8 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               // ignore: prefer_const_literals_to_create_immutables
               children: [
-                const Image(
-                  image: AssetImage("assets/icons/mm_logo.png"),
+                Image(
+                  image:  AssetImage("assets/icons/mm_logo.png"),
                   width: 70,
                   height: 70,
                 ),
@@ -148,6 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
             physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
             children: [
+              SizedBox(height: 15),
               Stack(children: [
                 ProfilePicWidget(picURL),
                 Positioned(
@@ -193,17 +194,20 @@ class _ProfilePageState extends State<ProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  StatsWidget("Rating", rating),
-                  StatsWidget("Points", points),
-                  StatsWidget("Report", reportCount)
+                  StatsWidget("Rating", rating, Colors.orange),
+                  StatsWidget("Points", points, Colors.green),
+                  StatsWidget("Report", reportCount, Colors.red)
                 ],
               ),
               SizedBox(height: 40),
               Column(
                 children: [
                   ProfileFieldWidget("Phone Number", phone.toString()),
+                  SizedBox(height: 10),
                   ProfileFieldWidget("Email Address", email),
+                  SizedBox(height: 10),
                   ProfileFieldWidget("About you", about),
+                  SizedBox(height: 10),
                 ],
               )
             ]),

@@ -32,7 +32,8 @@ class ProfilePicWidget extends StatelessWidget {
             shape: BoxShape.circle,
             color: Colors.white,
             image: DecorationImage(
-                fit: BoxFit.fill, image: AssetImage(dummyProfilePicUrl))),
+                fit: BoxFit.fill,
+                image: AssetImage(url == "" ? dummyProfilePicUrl : url))),
       ),
     );
   }

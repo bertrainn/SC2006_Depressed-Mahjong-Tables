@@ -46,6 +46,7 @@ dependencies:
   file_picker: ^5.2.0+1
   flutter_chat_ui: ^1.6.5
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
