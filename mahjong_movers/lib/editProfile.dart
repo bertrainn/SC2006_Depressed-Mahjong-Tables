@@ -42,6 +42,7 @@ class _EditProfileState extends State<EditProfilePage> {
   String _newPassword = "";
   XFile? pickedImage;
   File? pickedImageFile;
+
   final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
@@ -132,7 +133,6 @@ class _EditProfileState extends State<EditProfilePage> {
           phone = data["phone"];
           about = data["about"];
           picURL = data["picURL"];
-          //_password = data["password"];
         });
       },
       onError: (e) => print("Error getting document: $e"),
@@ -341,11 +341,19 @@ class _EditProfileState extends State<EditProfilePage> {
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
                           onPressed: () {
-                            setState(() {
-                              _showPassword = !_showPassword;
-                            });
+                            // setState(() {
+                            //   _showPassword = !_showPassword;
+                            // });
+
+                            // setState(() => isOpen = true);
+
+                            showModalBottomSheet(
+                              context: context,
+                              builder: ((builder) => getDecision()),
+                            );
                           },
-                          icon: Icon(Icons.remove_red_eye, color: Colors.grey)),
+                          // icon: Icon(Icons.remove_red_eye, color: Colors.grey)),
+                          icon: Icon(Icons.mode_sharp, color: Colors.grey)),
                       contentPadding: EdgeInsets.only(
                           top: 20, bottom: 10, right: 20, left: 20),
                       labelText: "Password",
@@ -357,7 +365,9 @@ class _EditProfileState extends State<EditProfilePage> {
                         color: Colors.black,
                       ),
                     ),
-                    onChanged: (value) => setState(() => _newPassword = value)),
+                    onChanged: (value) {
+                      //=> setState(() => _newPassword = value)
+                    }),
                 TextFormField(
                     keyboardType: TextInputType.multiline,
                     maxLines: 5,
@@ -539,6 +549,54 @@ class _EditProfileState extends State<EditProfilePage> {
               ),
             ),
           ]),
+        ]));
+  }
+
+  Widget getDecision() {
+    return Container(
+        height: 120,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(5), topRight: Radius.circular(5)),
+        ),
+        child: Column(children: <Widget>[
+          SizedBox(height: 15),
+          Text("Confirm Change Password?",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              )),
+          SizedBox(height: 26),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            TextButton.icon(
+              icon: Icon(
+                Icons.check_circle_outline,
+                size: 30,
+              ),
+              onPressed: () {
+                print("confirmed");
+                Navigator.pushReplacementNamed(context, '/changePassword');
+              },
+              label: Text(
+                "Yes",
+              ),
+            ),
+            SizedBox(width: 20),
+            TextButton.icon(
+              icon: Icon(
+                Icons.arrow_back_ios_outlined,
+                size: 30,
+              ),
+              onPressed: () {
+                print("go back");
+                Navigator.pop(context);
+              },
+              label: Text(
+                "Back",
+              ),
+            ),
+          ])
         ]));
   }
 }

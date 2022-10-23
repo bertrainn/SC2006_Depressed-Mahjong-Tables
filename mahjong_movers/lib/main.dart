@@ -15,6 +15,7 @@ import 'rewards.dart';
 import 'editProfile.dart';
 import 'report.dart';
 import 'rate.dart';
+import 'changePassword.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
         '/editProfile': (context) => const EditProfilePage(),
         '/report': (context) => const ReportPage(),
         '/rate': (context) => const RatePage(),
+        '/changePassword': (context) => const ChangePassword(),
       },
     );
   }
