@@ -60,12 +60,12 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
         <String, dynamic>{}) as Map;
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(120),
+          preferredSize: const Size.fromHeight(75),
           child: AppBar(
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
             )),
             centerTitle: true,
             backgroundColor: const Color.fromARGB(255, 33, 126, 50),

@@ -224,8 +224,9 @@ class _EditProfileState extends State<EditProfilePage> {
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only()),
               centerTitle: true,
-              backgroundColor: const Color.fromARGB(255, 33, 126, 50),
+              backgroundColor: Color.fromRGBO(33, 126, 50, 1),
               leading: IconButton(
+                //alignment: Alignment.center,
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
                   setState(() {
@@ -234,11 +235,14 @@ class _EditProfileState extends State<EditProfilePage> {
                 },
               ),
               title: Row(
+                //mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 // ignore: prefer_const_literals_to_create_immutables
                 children: [
                   const Text(
                     "Edit Profile",
+                    textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
