@@ -12,8 +12,8 @@
 <!--Project Logo-->
 
 <div align="center">
-  <a href="https://github.com/bertrainn/SC2006_Depressed-Mahjong-Tables/blob/main/Logo%20Files/Mahjong%20Movers-logos.jpeg">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/bertrainn/SC2006_Depressed-Mahjong-Tables/">
+    <img src="Logo Files/Mahjong Movers-logos.jpeg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Mahjong Movers</h3>
