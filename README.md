@@ -32,7 +32,7 @@ This is the repository for SC2006 Lab Assignment for lab group SSP 1 under the g
 
 ## Our Tech Stack
 
-- [![Flutter][flutter.dev]][flutter-url]
+- [![Flutter][flutter.dev]][Flutter-url]
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contributors
