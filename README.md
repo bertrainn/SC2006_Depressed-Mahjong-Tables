@@ -32,7 +32,8 @@ This is the repository for SC2006 Lab Assignment for lab group SSP 1 under the g
 
 ## Our Tech Stack
 
-- [![Flutter][flutter.dev]][Flutter-url]
+- Flutter
+- Firebase
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contributors
@@ -45,3 +46,6 @@ This is the repository for SC2006 Lab Assignment for lab group SSP 1 under the g
 - [Yue Hong](https://github.com/AmosChong20)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+
