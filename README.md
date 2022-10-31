@@ -9,6 +9,20 @@
     </ol>
 </details>
 
+<!--Project Logo-->
+
+<div align="center">
+  <a href="https://github.com/bertrainn/SC2006_Depressed-Mahjong-Tables/blob/main/Logo%20Files/Mahjong%20Movers-logos.jpeg">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">Mahjong Movers</h3>
+
+  <p align="center">
+    For All The Mahjong Tables That You Need Moved!
+  </p>
+</div>
+
 ## About
 
 Our project is a Flutter mobile application.
