@@ -1,29 +1,27 @@
 # SC2006_Depressed-Mahjong-Tables
 
-<!-- TABLE OF CONTENTS -->
-<details>
-    <summary>Table of Contents</summary>
-    <ol>
-        <li>About The Project</li>
-        <li>Contributors</li>
-    </ol>
-</details>
-
 <!--Project Logo-->
 
 <div align="center">
-  <a href="https://github.com/bertrainn/SC2006_Depressed-Mahjong-Tables/">
-    <img src="Logo Files/Mahjong Movers-logos.jpeg" alt="Logo" width="80" height="80">
+  <a name="readme-top" href="https://github.com/bertrainn/SC2006_Depressed-Mahjong-Tables/">
+    <img src="Logo Files/Mahjong Movers-logos.jpeg" alt="Logo" width="120" height="120">
   </a>
-
   <h3 align="center">Mahjong Movers</h3>
-
   <p align="center">
     For All The Mahjong Tables That You Need Moved!
   </p>
 </div>
 
-## About
+<!-- TABLE OF CONTENTS -->
+<details>
+    <summary>Table of Contents</summary>
+    <ol>
+        <li><a href="#about-the-project">About The Project</a></li>
+        <li><a href="#contributors">Contributors</a></li>
+    </ol>
+</details>
+
+## About The Project
 
 Our project is a Flutter mobile application.
 
