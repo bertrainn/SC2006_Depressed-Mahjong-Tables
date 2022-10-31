@@ -17,6 +17,7 @@
     <summary>Table of Contents</summary>
     <ol>
         <li><a href="#about-the-project">About The Project</a></li>
+        <li><a href="#our-tech-stack">Our Tech Stack</a></li>
         <li><a href="#contributors">Contributors</a></li>
     </ol>
 </details>
@@ -27,6 +28,11 @@ Our project is a Flutter mobile application.
 
 This is the repository for SC2006 Lab Assignment for lab group SSP 1 under the group name depressed elderly.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Our Tech Stack
+
+- [![Flutter][flutter.dev]][flutter-url]
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contributors
