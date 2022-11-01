@@ -28,7 +28,7 @@ Mahjong Movers is an odd job finding mobile application made with Flutter with o
 
 This is the repository for SC2006 Lab Assignment for lab group SSP 1 under the group name Depressed Elderly.
 
-Demo Video: https://www.youtube.com/watch?v=qQqhNCfb_UQ
+Demo Video: <a href="https://www.youtube.com/watch?v=qQqhNCfb_UQ"> <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white"/></a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
