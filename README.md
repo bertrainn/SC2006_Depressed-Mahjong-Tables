@@ -32,8 +32,18 @@ This is the repository for SC2006 Lab Assignment for lab group SSP 1 under the g
 
 ## Our Tech Stack
 
-- Flutter
-- Firebase
+<ul>
+  <li>
+  <a href="flutter.dev"> 
+     <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" />  
+  </a>
+      </li>
+    <li>
+  <a href="https://firebase.google.com/"> 
+     <img src="https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white">   
+  </a>
+        </li>
+ </ul>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contributors
