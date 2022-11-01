@@ -4,7 +4,7 @@
 
 <div align="center">
   <a name="readme-top" href="https://github.com/bertrainn/SC2006_Depressed-Mahjong-Tables/">
-    <img src="Logo Files/Mahjong Movers-logos.jpeg" alt="Logo" width="120" height="120">
+    <img src="Logo Files/Mahjong Movers-logos.jpeg" alt="Logo" width="160" height="160">
   </a>
   <h3 align="center">Mahjong Movers</h3>
   <p align="center">
@@ -24,9 +24,9 @@
 
 ## About The Project
 
-Our project is a Flutter mobile application.
+Mahjong Movers is an odd job finding mobile application made with Flutter with our database deployed on Firebase. 
 
-This is the repository for SC2006 Lab Assignment for lab group SSP 1 under the group name depressed elderly.
+This is the repository for SC2006 Lab Assignment for lab group SSP 1 under the group name Depressed Elderly.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
