@@ -33,6 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   int points = 0;
   int reportCount = 0;
   String about = "";
+
   @override
   void initState() {
     super.initState();
@@ -94,8 +95,10 @@ class _ProfilePageState extends State<ProfilePage> {
           name = data['name'];
           email = data['email'];
           phone = data["phone"];
-          rating = data["rating"];
-          points = data["points"];
+          print(rating);
+          rating = data["rating"] as int;
+          print(rating);
+          points = data["points"] as int;
           data.containsKey("about") ? about = data["about"] : about = "";
         });
       },
@@ -120,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
               // ignore: prefer_const_literals_to_create_immutables
               children: [
                 Image(
-                  image:  AssetImage("assets/icons/mm_logo.png"),
+                  image: AssetImage("assets/icons/mm_logo.png"),
                   width: 70,
                   height: 70,
                 ),

@@ -77,7 +77,10 @@ class _EditProfileState extends State<EditProfilePage> {
   // }
 
   Future<String> uploadImage(var imageFile) async {
-    Reference ref = FirebaseStorage.instance.ref().child("/photo.jpg");
+    final _userID = FirebaseAuth.instance.currentUser!.uid;
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("images/user/profile_images/${_userID}");
     UploadTask uploadTask = ref.putFile(imageFile);
     String imageUrl = "";
     uploadTask.then((res) {
@@ -113,6 +116,7 @@ class _EditProfileState extends State<EditProfilePage> {
         .child(_file_name[0]);
     var url = await ref.getDownloadURL();
     setState(() {
+      print("setState for picURL");
       picURL = url;
     });
   }
@@ -125,8 +129,7 @@ class _EditProfileState extends State<EditProfilePage> {
         .then(
       (DocumentSnapshot doc) {
         final data = doc.data() as Map<String, dynamic>;
-        // print(data['email']);
-        // print(data['name']);
+
         setState(() {
           name = data['name'];
           email = data['email'];
@@ -158,10 +161,8 @@ class _EditProfileState extends State<EditProfilePage> {
       maxHeight: 512,
       imageQuality: 75,
     );
-    //if (pickedFile == null) return;
     setState(() {
-      pickedImage = pickedFile;
-      pickedImageFile = File(pickedImage!.path);
+      pickedImageFile = File(pickedFile!.path);
     });
   }
 
@@ -182,7 +183,7 @@ class _EditProfileState extends State<EditProfilePage> {
     final docRef = FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser?.uid);
-    if (name != newName) {
+    if (name != newName && name != null) {
       print("newName != null");
       toUpdate["name"] = newName;
     }
@@ -203,6 +204,7 @@ class _EditProfileState extends State<EditProfilePage> {
       return;
     }
     if (picURL != "") {
+      print("picUrl");
       uploadImage(pickedImageFile);
     }
 
@@ -230,7 +232,7 @@ class _EditProfileState extends State<EditProfilePage> {
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
                   setState(() {
-                    Navigator.pushNamed(context, '/profile');
+                    Navigator.popAndPushNamed(context, '/profile');
                   });
                 },
               ),
@@ -330,48 +332,40 @@ class _EditProfileState extends State<EditProfilePage> {
                     ),
                     onChanged: (value) => setState(() => newEmail = value)),
                 TextFormField(
-                    validator: (value) {
-                      if (value != null &&
-                          value.isNotEmpty &&
-                          !RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[!@#\$&*~]).{8,}$')
-                              .hasMatch(value!)) {
-                        String msg =
-                            "Passwords must be at least 8-characters long, mixcased,\n alphanumeric, and has at least one special character\n('%', '#', '@')";
-                        return msg;
-                      }
-                    },
-                    obscureText: !_showPassword,
-                    obscuringCharacter: "*",
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            // setState(() {
-                            //   _showPassword = !_showPassword;
-                            // });
-
-                            // setState(() => isOpen = true);
-
-                            showModalBottomSheet(
-                              context: context,
-                              builder: ((builder) => getDecision()),
-                            );
-                          },
-                          // icon: Icon(Icons.remove_red_eye, color: Colors.grey)),
-                          icon: Icon(Icons.mode_sharp, color: Colors.grey)),
-                      contentPadding: EdgeInsets.only(
-                          top: 20, bottom: 10, right: 20, left: 20),
-                      labelText: "Password",
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      hintText: "********",
-                      hintStyle: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                  validator: (value) {
+                    if (value != null &&
+                        value.isNotEmpty &&
+                        !RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[!@#\$&*~]).{8,}$')
+                            .hasMatch(value!)) {
+                      String msg =
+                          "Passwords must be at least 8-characters long, mixcased,\n alphanumeric, and has at least one special character\n('%', '#', '@')";
+                      return msg;
+                    }
+                  },
+                  obscureText: !_showPassword,
+                  obscuringCharacter: "*",
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: ((builder) => getDecision()),
+                          );
+                        },
+                        icon: Icon(Icons.mode_sharp, color: Colors.grey)),
+                    contentPadding: EdgeInsets.only(
+                        top: 20, bottom: 10, right: 20, left: 20),
+                    labelText: "Password",
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: "********",
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                    onChanged: (value) {
-                      //=> setState(() => _newPassword = value)
-                    }),
+                  ),
+                  readOnly: true,
+                ),
                 TextFormField(
                     keyboardType: TextInputType.multiline,
                     maxLines: 5,
@@ -403,7 +397,7 @@ class _EditProfileState extends State<EditProfilePage> {
                       SizedBox(width: 30),
                       OutlinedButton(
                           onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/profile');
+                            Navigator.popAndPushNamed(context, '/profile');
                           },
                           child: const Text("Cancel")),
                       OutlinedButton(
