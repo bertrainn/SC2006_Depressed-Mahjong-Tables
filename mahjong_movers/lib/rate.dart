@@ -135,10 +135,19 @@ class _RatePageState extends State<RatePage> {
                                           TextButton(
                                             child: const Text("Ok"),
                                             onPressed: () {
-                                              FirebaseFirestore.instance
-                                                  .collection('transaction')
-                                                  .doc(arguments['jobID'])
-                                                  .update({"jobStatus": 6});
+                                              if (arguments['servicer'] ==
+                                                  true) {
+                                                FirebaseFirestore.instance
+                                                    .collection('transaction')
+                                                    .doc(arguments['jobID'])
+                                                    .update({"jobStatus": 2});
+                                              } else {
+                                                FirebaseFirestore.instance
+                                                    .collection('transaction')
+                                                    .doc(arguments['jobID'])
+                                                    .update({"jobStatus": 3});
+                                              }
+
                                               Navigator.of(context).popUntil(
                                                   (route) => route.isFirst);
 

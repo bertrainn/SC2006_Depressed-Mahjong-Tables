@@ -151,12 +151,12 @@ class _JobInfoPageState extends State<JobInfoPage> {
     _center = LatLng(geoPointList.latitude, geoPointList.longitude);
 
     if ((DateTime.now().millisecondsSinceEpoch - transactionCreatedTime) <=
-        3000) {
+        180000) {
       canDelete = true;
     }
 
     if ((DateTime.now().millisecondsSinceEpoch - transactionAcceptedTime) <=
-        3000) {
+        180000) {
       canDeleteS = true;
     }
 
@@ -323,7 +323,8 @@ class _JobInfoPageState extends State<JobInfoPage> {
                                       Navigator.popAndPushNamed(
                                           context, '/rate', arguments: {
                                         "UID": servicerID,
-                                        "jobID": arguments['jobID']
+                                        "jobID": arguments['jobID'],
+                                        "servicer": true
                                       });
                                     },
                                   )

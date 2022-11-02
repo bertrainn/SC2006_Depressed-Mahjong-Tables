@@ -44,11 +44,6 @@ class _EditProfileState extends State<EditProfilePage> {
   File? pickedImageFile;
 
   final ImagePicker _picker = ImagePicker();
-  @override
-  void initState() {
-    super.initState();
-    RetrieveUserData();
-  }
 
   // Future pickUploadImage() async {
   //   // final image = await ImagePicker().pickImage(
@@ -182,7 +177,7 @@ class _EditProfileState extends State<EditProfilePage> {
     final docRef = FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser?.uid);
-    if (name != newName) {
+    if (name != newName && name != "") {
       print("newName != null");
       toUpdate["name"] = newName;
     }
@@ -214,6 +209,12 @@ class _EditProfileState extends State<EditProfilePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    RetrieveUserData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         extendBody: true,
@@ -230,6 +231,7 @@ class _EditProfileState extends State<EditProfilePage> {
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
                   setState(() {
+                    Navigator.pop(context);
                     Navigator.pushNamed(context, '/profile');
                   });
                 },

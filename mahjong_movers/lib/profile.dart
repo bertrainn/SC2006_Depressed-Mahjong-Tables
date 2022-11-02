@@ -33,11 +33,6 @@ class _ProfilePageState extends State<ProfilePage> {
   int points = 0;
   int reportCount = 0;
   String about = "";
-  @override
-  void initState() {
-    super.initState();
-    RetrieveUserData();
-  }
 
   void pickUploadImage() async {
     final image = await ImagePicker().pickImage(
@@ -94,13 +89,20 @@ class _ProfilePageState extends State<ProfilePage> {
           name = data['name'];
           email = data['email'];
           phone = data["phone"];
-          rating = data["rating"];
-          points = data["points"];
+          rating = data["rating"].round();
+          points = data["points"].round();
+
           data.containsKey("about") ? about = data["about"] : about = "";
         });
       },
       onError: (e) => print("Error getting document: $e"),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    RetrieveUserData();
   }
 
   @override
@@ -120,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
               // ignore: prefer_const_literals_to_create_immutables
               children: [
                 Image(
-                  image:  AssetImage("assets/icons/mm_logo.png"),
+                  image: AssetImage("assets/icons/mm_logo.png"),
                   width: 70,
                   height: 70,
                 ),
