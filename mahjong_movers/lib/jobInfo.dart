@@ -229,7 +229,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
                 ],
               ),
             ),
-            if (servicerID != '' && jobStatus == 1)
+            if (jobStatus == 1)
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -322,7 +322,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
 
                                       Navigator.popAndPushNamed(
                                           context, '/rate', arguments: {
-                                        "UID": servicerID,
+                                        "UID": requestorID,
                                         "jobID": arguments['jobID'],
                                         "servicer": true
                                       });
@@ -337,7 +337,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
                   ],
                 ),
               ),
-            if (servicerID != '' && jobStatus == 2)
+            if (jobStatus == 2)
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -393,7 +393,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
 
                                       Navigator.popAndPushNamed(
                                           context, '/rate', arguments: {
-                                        "UID": requestorID,
+                                        "UID": servicerID,
                                         "jobID": arguments['jobID']
                                       });
                                     },

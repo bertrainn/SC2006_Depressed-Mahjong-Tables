@@ -112,8 +112,8 @@ class _EditProfileState extends State<EditProfilePage> {
     });
   }
 
-  void RetrieveUserData() {
-    FirebaseFirestore.instance
+  void RetrieveUserData() async {
+    await FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .get()
