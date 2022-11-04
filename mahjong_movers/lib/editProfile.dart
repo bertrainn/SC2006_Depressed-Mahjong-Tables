@@ -72,7 +72,10 @@ class _EditProfileState extends State<EditProfilePage> {
   // }
 
   Future<String> uploadImage(var imageFile) async {
-    Reference ref = FirebaseStorage.instance.ref().child("/photo.jpg");
+    final _userID = FirebaseAuth.instance.currentUser!.uid;
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("images/user/profile_images/${_userID}");
     UploadTask uploadTask = ref.putFile(imageFile);
     String imageUrl = "";
     uploadTask.then((res) {
@@ -108,6 +111,7 @@ class _EditProfileState extends State<EditProfilePage> {
         .child(_file_name[0]);
     var url = await ref.getDownloadURL();
     setState(() {
+      print("setState for picURL");
       picURL = url;
     });
   }
@@ -120,8 +124,7 @@ class _EditProfileState extends State<EditProfilePage> {
         .then(
       (DocumentSnapshot doc) {
         final data = doc.data() as Map<String, dynamic>;
-        // print(data['email']);
-        // print(data['name']);
+
         setState(() {
           name = data['name'];
           email = data['email'];
@@ -153,59 +156,54 @@ class _EditProfileState extends State<EditProfilePage> {
       maxHeight: 512,
       imageQuality: 75,
     );
-    //if (pickedFile == null) return;
     setState(() {
-      pickedImage = pickedFile;
-      pickedImageFile = File(pickedImage!.path);
+      pickedImageFile = File(pickedFile!.path);
     });
   }
 
-  bool _submit() {
+  Future<int> _submit() async {
     if (_formKeyProfile.currentState!.validate()) {
-      update();
-      print("successful");
-      return true;
+      return await update();
     } else {
       print("errors");
-      return false;
+      return 0;
     }
   }
 
-  Future update() async {
+  Future<int> update() async {
     Map<String, Object> toUpdate = {};
 
     final docRef = FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser?.uid);
-    if (name != newName && name != "") {
+    if (name != newName && newName != "") {
       print("newName != null");
       toUpdate["name"] = newName;
     }
     if (newEmail != "") {
       toUpdate["email"] = newEmail;
     }
-    if (newPhone != null) {
+    if (newPhone != null && newPhone != phone) {
       toUpdate["phone"] = newPhone as int;
     }
-    if (newAbout != "") {
+    if (newAbout != "" && newAbout != about) {
       toUpdate["about"] = newAbout;
     }
-    if (_newPassword != "") {
-      _changePassword(_newPassword);
+    if (picURL != "") {
+      print("picUrl");
+      uploadImage(pickedImageFile);
     }
     if (toUpdate.isEmpty) {
       print("nothing to update");
-      return;
+      return 2;
     }
-    if (picURL != "") {
-      uploadImage(pickedImageFile);
-    }
-
     try {
       docRef.update(toUpdate);
     } catch (e) {
       print("some error occurred");
+      return 0;
     }
+    return 1;
   }
 
   @override
@@ -231,8 +229,7 @@ class _EditProfileState extends State<EditProfilePage> {
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
                   setState(() {
-                    Navigator.pop(context);
-                    Navigator.pushNamed(context, '/profile');
+                    Navigator.pushReplacementNamed(context, '/profile');
                   });
                 },
               ),
@@ -273,7 +270,8 @@ class _EditProfileState extends State<EditProfilePage> {
                         color: Colors.black,
                       ),
                     ),
-                    onChanged: (value) => setState(() => newName = value)),
+                    onChanged: (value) => setState(
+                        () => value != "" ? newName = value : newName = name)),
                 TextFormField(
                   validator: (value) {
                     if (value != null &&
@@ -332,48 +330,42 @@ class _EditProfileState extends State<EditProfilePage> {
                     ),
                     onChanged: (value) => setState(() => newEmail = value)),
                 TextFormField(
-                    validator: (value) {
-                      if (value != null &&
-                          value.isNotEmpty &&
-                          !RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[!@#\$&*~]).{8,}$')
-                              .hasMatch(value!)) {
-                        String msg =
-                            "Passwords must be at least 8-characters long, mixcased,\n alphanumeric, and has at least one special character\n('%', '#', '@')";
-                        return msg;
-                      }
-                    },
-                    obscureText: !_showPassword,
-                    obscuringCharacter: "*",
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            // setState(() {
-                            //   _showPassword = !_showPassword;
-                            // });
-
-                            // setState(() => isOpen = true);
-
-                            showModalBottomSheet(
-                              context: context,
-                              builder: ((builder) => getDecision()),
-                            );
-                          },
-                          // icon: Icon(Icons.remove_red_eye, color: Colors.grey)),
-                          icon: Icon(Icons.mode_sharp, color: Colors.grey)),
-                      contentPadding: EdgeInsets.only(
-                          top: 20, bottom: 10, right: 20, left: 20),
-                      labelText: "Password",
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      hintText: "********",
-                      hintStyle: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                  validator: (value) {
+                    if (value != null &&
+                        value.isNotEmpty &&
+                        !RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[!@#\$&*~]).{8,}$')
+                            .hasMatch(value!)) {
+                      String msg =
+                          "Passwords must be at least 8-characters long, mixcased,\n alphanumeric, and has at least one special character\n('%', '#', '@')";
+                      return msg;
+                    } else {
+                      return null;
+                    }
+                  },
+                  obscureText: !_showPassword,
+                  obscuringCharacter: "*",
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: ((builder) => getDecision()),
+                          );
+                        },
+                        icon: Icon(Icons.mode_sharp, color: Colors.grey)),
+                    contentPadding: EdgeInsets.only(
+                        top: 20, bottom: 10, right: 20, left: 20),
+                    labelText: "Password",
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintText: "********",
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                    onChanged: (value) {
-                      //=> setState(() => _newPassword = value)
-                    }),
+                  ),
+                  readOnly: true,
+                ),
                 TextFormField(
                     keyboardType: TextInputType.multiline,
                     maxLines: 5,
@@ -409,18 +401,12 @@ class _EditProfileState extends State<EditProfilePage> {
                           },
                           child: const Text("Cancel")),
                       OutlinedButton(
-                          onPressed: () {
-                            _submit()
-                                ? showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text("Success!"),
-                                        content: Text(
-                                            "Account information has been updated"),
-                                      );
-                                    })
-                                : showDialog(
+                          onPressed: () async {
+                            int show = await _submit();
+                            print(show);
+                            switch (show) {
+                              case 0:
+                                showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
@@ -429,6 +415,31 @@ class _EditProfileState extends State<EditProfilePage> {
                                             "There were errors, please try again"),
                                       );
                                     });
+                                break;
+                              case 1:
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text("Success!"),
+                                        content: Text(
+                                            "Account information has been updated"),
+                                      );
+                                    });
+                                break;
+                              case 2:
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text("No Changes to be made"),
+                                        content: Text(
+                                            "You have not made any changes"),
+                                      );
+                                    });
+                                break;
+                              default:
+                            }
                           },
                           child: const Text("Make Changes")),
                       SizedBox(width: 30),
