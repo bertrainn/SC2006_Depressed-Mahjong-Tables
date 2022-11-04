@@ -161,53 +161,49 @@ class _EditProfileState extends State<EditProfilePage> {
     });
   }
 
-  bool _submit() {
+  Future<int> _submit() async {
     if (_formKeyProfile.currentState!.validate()) {
-      update();
-      print("successful");
-      return true;
+      return await update();
     } else {
       print("errors");
-      return false;
+      return 0;
     }
   }
 
-  Future update() async {
+  Future<int> update() async {
     Map<String, Object> toUpdate = {};
 
     final docRef = FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser?.uid);
-    if (name != newName && name != "") {
+    if (name != newName && newName != "") {
       print("newName != null");
       toUpdate["name"] = newName;
     }
     if (newEmail != "") {
       toUpdate["email"] = newEmail;
     }
-    if (newPhone != null) {
+    if (newPhone != null && newPhone != phone) {
       toUpdate["phone"] = newPhone as int;
     }
-    if (newAbout != "") {
+    if (newAbout != "" && newAbout != about) {
       toUpdate["about"] = newAbout;
-    }
-    if (_newPassword != "") {
-      _changePassword(_newPassword);
-    }
-    if (toUpdate.isEmpty) {
-      print("nothing to update");
-      return;
     }
     if (picURL != "") {
       print("picUrl");
       uploadImage(pickedImageFile);
     }
-
+    if (toUpdate.isEmpty) {
+      print("nothing to update");
+      return 2;
+    }
     try {
       docRef.update(toUpdate);
     } catch (e) {
       print("some error occurred");
+      return 0;
     }
+    return 1;
   }
 
   @override
@@ -274,7 +270,8 @@ class _EditProfileState extends State<EditProfilePage> {
                         color: Colors.black,
                       ),
                     ),
-                    onChanged: (value) => setState(() => newName = value)),
+                    onChanged: (value) => setState(
+                        () => value != "" ? newName = value : newName = name)),
                 TextFormField(
                   validator: (value) {
                     if (value != null &&
@@ -341,6 +338,8 @@ class _EditProfileState extends State<EditProfilePage> {
                       String msg =
                           "Passwords must be at least 8-characters long, mixcased,\n alphanumeric, and has at least one special character\n('%', '#', '@')";
                       return msg;
+                    } else {
+                      return null;
                     }
                   },
                   obscureText: !_showPassword,
@@ -402,18 +401,12 @@ class _EditProfileState extends State<EditProfilePage> {
                           },
                           child: const Text("Cancel")),
                       OutlinedButton(
-                          onPressed: () {
-                            _submit()
-                                ? showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text("Success!"),
-                                        content: Text(
-                                            "Account information has been updated"),
-                                      );
-                                    })
-                                : showDialog(
+                          onPressed: () async {
+                            int show = await _submit();
+                            print(show);
+                            switch (show) {
+                              case 0:
+                                showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
@@ -422,6 +415,31 @@ class _EditProfileState extends State<EditProfilePage> {
                                             "There were errors, please try again"),
                                       );
                                     });
+                                break;
+                              case 1:
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text("Success!"),
+                                        content: Text(
+                                            "Account information has been updated"),
+                                      );
+                                    });
+                                break;
+                              case 2:
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text("No Changes to be made"),
+                                        content: Text(
+                                            "You have not made any changes"),
+                                      );
+                                    });
+                                break;
+                              default:
+                            }
                           },
                           child: const Text("Make Changes")),
                       SizedBox(width: 30),
