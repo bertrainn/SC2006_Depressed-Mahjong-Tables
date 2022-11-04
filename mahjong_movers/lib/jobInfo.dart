@@ -151,12 +151,12 @@ class _JobInfoPageState extends State<JobInfoPage> {
     _center = LatLng(geoPointList.latitude, geoPointList.longitude);
 
     if ((DateTime.now().millisecondsSinceEpoch - transactionCreatedTime) <=
-        3000) {
+        180000) {
       canDelete = true;
     }
 
     if ((DateTime.now().millisecondsSinceEpoch - transactionAcceptedTime) <=
-        3000) {
+        180000) {
       canDeleteS = true;
     }
 
@@ -229,7 +229,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
                 ],
               ),
             ),
-            if (servicerID != '' && jobStatus == 1)
+            if (jobStatus == 1)
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -322,8 +322,9 @@ class _JobInfoPageState extends State<JobInfoPage> {
 
                                       Navigator.popAndPushNamed(
                                           context, '/rate', arguments: {
-                                        "UID": servicerID,
-                                        "jobID": arguments['jobID']
+                                        "UID": requestorID,
+                                        "jobID": arguments['jobID'],
+                                        "servicer": true
                                       });
                                     },
                                   )
@@ -336,7 +337,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
                   ],
                 ),
               ),
-            if (servicerID != '' && jobStatus == 2)
+            if (jobStatus == 2)
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -392,7 +393,7 @@ class _JobInfoPageState extends State<JobInfoPage> {
 
                                       Navigator.popAndPushNamed(
                                           context, '/rate', arguments: {
-                                        "UID": requestorID,
+                                        "UID": servicerID,
                                         "jobID": arguments['jobID']
                                       });
                                     },

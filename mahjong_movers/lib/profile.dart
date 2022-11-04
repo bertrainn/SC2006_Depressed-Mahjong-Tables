@@ -34,12 +34,6 @@ class _ProfilePageState extends State<ProfilePage> {
   int reportCount = 0;
   String about = "";
 
-  @override
-  void initState() {
-    super.initState();
-    RetrieveUserData();
-  }
-
   void pickUploadImage() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
@@ -95,15 +89,20 @@ class _ProfilePageState extends State<ProfilePage> {
           name = data['name'];
           email = data['email'];
           phone = data["phone"];
-          print(rating);
-          rating = data["rating"] as int;
-          print(rating);
-          points = data["points"] as int;
+          rating = data["rating"].round();
+          points = data["points"].round();
+
           data.containsKey("about") ? about = data["about"] : about = "";
         });
       },
       onError: (e) => print("Error getting document: $e"),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    RetrieveUserData();
   }
 
   @override

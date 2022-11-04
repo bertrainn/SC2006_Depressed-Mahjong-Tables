@@ -23,13 +23,13 @@ class _RewardsPageState extends State<RewardsPage> {
   int currentNavIndex = 2;
 
   int noOfRewards = 0;
-  List<int> rewardIDR = [];
+  List<double> rewardIDR = [];
   List<String> nameR = [];
   List<String> descriptionR = [];
   List<String> picURLR = [];
-  List<int> priceR = [];
+  List<double> priceR = [];
 
-  int points = 0;
+  double points = 0;
   String name = "";
 
   @override
@@ -38,7 +38,7 @@ class _RewardsPageState extends State<RewardsPage> {
     RetrieveRewardData();
   }
 
-  void RetrieveRewardData() {
+  void RetrieveRewardData() async {
     FirebaseFirestore.instance
         .collection('rewards')
         .snapshots()
@@ -47,16 +47,16 @@ class _RewardsPageState extends State<RewardsPage> {
       snapshot.docs.forEach((reward) {
         setState(() {
           //_controllerList.add(Completer());
-          rewardIDR.add(reward.get('rewardID'));
+          rewardIDR.add(reward.get('rewardID').toDouble());
           nameR.add(reward.get('name'));
           descriptionR.add(reward.get('description'));
           picURLR.add(reward.get('picURL'));
-          priceR.add(reward.get('price'));
+          priceR.add(reward.get('price').toDouble());
           ++noOfRewards;
         });
       });
     });
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .get()
@@ -65,12 +65,13 @@ class _RewardsPageState extends State<RewardsPage> {
         final data = doc.data() as Map<String, dynamic>;
         name = data['name'];
         points = data['points'];
+        print(points);
       },
       onError: (e) => print("Error getting document: $e"),
     );
   }
 
-  void updatePointValue(int newValue) {
+  void updatePointValue(double newValue) {
     FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -156,7 +157,7 @@ class _RewardsPageState extends State<RewardsPage> {
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
                     child: Text(
-                      "${priceR[index]} Points",
+                      "${priceR[index].round()} Points",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),

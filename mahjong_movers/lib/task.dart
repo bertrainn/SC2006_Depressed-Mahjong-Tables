@@ -53,7 +53,8 @@ class _TaskPageState extends State<TaskPage> {
       snapshot.docs.forEach((transaction) {
         setState(() {
           //_controllerList.add(Completer());
-          if (transaction.get('jobStatus') != 6) {
+          if (transaction.get('jobStatus') != 6 &&
+              transaction.get('jobStatus') != 3) {
             locationNameR.add(transaction.get('locationName'));
             jobNameR.add(transaction.get('job'));
             jobDescR.add(transaction.get('jobDescription'));
@@ -78,7 +79,8 @@ class _TaskPageState extends State<TaskPage> {
       snapshot.docs.forEach((transaction) {
         setState(() {
           //_controllerList.add(Completer());
-          if (transaction.get('jobStatus') != 6) {
+          if (transaction.get('jobStatus') != 6 &&
+              transaction.get('jobStatus') != 3) {
             locationNameS.add(transaction.get('locationName'));
             jobNameS.add(transaction.get('job'));
             jobDescS.add(transaction.get('jobDescription'));
@@ -240,7 +242,7 @@ class _TaskPageState extends State<TaskPage> {
               case 3:
                 Navigator.pushReplacementNamed(
                   context,
-                  '/editProfile', //temp
+                  '/profile', //temp
                 );
                 break;
               case 4:

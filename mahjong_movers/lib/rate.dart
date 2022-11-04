@@ -21,26 +21,35 @@ class RatePage extends StatefulWidget {
 class _RatePageState extends State<RatePage> {
   final _formKey = GlobalKey<FormState>();
 
+  double computeRating = 0;
+  double points = 0;
+  double tempPoints = 0;
+
   final List<String> _selectableRating = ['1', '2', '3', '4', '5'];
   String _rating = "1";
 
-  void UpdateRating(String UID, String rate) {
-    double computeRating = 0;
-    int points = 0;
-    var userInfo = FirebaseFirestore.instance
+  void UpdateRating(String UID, String rate) async {
+    await FirebaseFirestore.instance
         .collection('user')
         .doc(UID)
         .get()
         .then((DocumentSnapshot doc) {
       final data = doc.data() as Map<String, dynamic>;
+
       computeRating = data['rating'];
       points = data['points'];
     });
 
-    computeRating += int.parse(rate);
+    await Future.delayed(Duration(seconds: 1));
+
+    computeRating += double.parse(rate);
+    //print(computeRating);
     computeRating = computeRating / 2;
-    points += int.parse(rate) * 2;
-    FirebaseFirestore.instance
+    tempPoints = double.parse(rate) * 2;
+    //print(tempPoints);
+    points += tempPoints;
+
+    await FirebaseFirestore.instance
         .collection('user')
         .doc(UID)
         .update({"rating": computeRating, "points": points});
@@ -135,10 +144,19 @@ class _RatePageState extends State<RatePage> {
                                           TextButton(
                                             child: const Text("Ok"),
                                             onPressed: () {
-                                              FirebaseFirestore.instance
-                                                  .collection('transaction')
-                                                  .doc(arguments['jobID'])
-                                                  .update({"jobStatus": 6});
+                                              if (arguments['servicer'] ==
+                                                  true) {
+                                                FirebaseFirestore.instance
+                                                    .collection('transaction')
+                                                    .doc(arguments['jobID'])
+                                                    .update({"jobStatus": 2});
+                                              } else {
+                                                FirebaseFirestore.instance
+                                                    .collection('transaction')
+                                                    .doc(arguments['jobID'])
+                                                    .update({"jobStatus": 3});
+                                              }
+
                                               Navigator.of(context).popUntil(
                                                   (route) => route.isFirst);
 
