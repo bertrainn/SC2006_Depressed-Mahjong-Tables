@@ -64,7 +64,7 @@ class _RewardsPageState extends State<RewardsPage> {
       (DocumentSnapshot doc) {
         final data = doc.data() as Map<String, dynamic>;
         name = data['name'];
-        points = data['points'];
+        points = data['points'].toDouble();
         print(points);
       },
       onError: (e) => print("Error getting document: $e"),
