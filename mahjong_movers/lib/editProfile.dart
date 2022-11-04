@@ -229,7 +229,7 @@ class _EditProfileState extends State<EditProfilePage> {
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
                   setState(() {
-                    Navigator.pushNamed(context, '/profile');
+                    Navigator.pushReplacementNamed(context, '/profile');
                   });
                 },
               ),
@@ -397,7 +397,7 @@ class _EditProfileState extends State<EditProfilePage> {
                       SizedBox(width: 30),
                       OutlinedButton(
                           onPressed: () {
-                            Navigator.popAndPushNamed(context, '/profile');
+                            Navigator.pushReplacementNamed(context, '/profile');
                           },
                           child: const Text("Cancel")),
                       OutlinedButton(
