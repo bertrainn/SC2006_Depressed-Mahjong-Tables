@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:developer';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +29,9 @@ class _RewardsPageState extends State<RewardsPage> {
   List<String> descriptionR = [];
   List<String> picURLR = [];
   List<double> priceR = [];
+  var r = Random();
+  static const _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
 
   double points = 0;
   String name = "";
@@ -222,11 +226,18 @@ class _RewardsPageState extends State<RewardsPage> {
                                                 context: context,
                                                 builder:
                                                     (BuildContext context) {
+                                                  String code = List.generate(
+                                                      10,
+                                                      (index) => _chars[
+                                                          r.nextInt(_chars
+                                                              .length)]).join();
+                                                  ;
                                                   return AlertDialog(
                                                     title: const Text(
                                                         "Redemption Successful"),
-                                                    content: const Text(
-                                                        "Please await for your reward. Hope you'll keep using our service. Thank You :)"),
+                                                    content: Text(
+                                                        "Your voucher code for Grab is shown below: " +
+                                                            code),
                                                     actions: [
                                                       TextButton(
                                                         child: const Text("Ok"),

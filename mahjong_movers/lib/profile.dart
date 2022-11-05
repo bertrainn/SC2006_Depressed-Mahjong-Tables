@@ -136,6 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
               IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/editProfile');
                   // setState(() {
                   //   // temporary -> we need a settings page i thik
                   //   Navigator.pushNamed(context, '/settings');
